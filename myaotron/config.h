@@ -45,7 +45,8 @@
 
 // ─── Deterrent Output ────────────────────────────────────────────
 // Digital pin connected to relay/MOSFET controlling the solenoid
-// valve or air pump.
+// valve that releases air from the reservoir (or directly controls
+// an air can).
 #define DETERRENT_PIN 7
 
 // Set to 1 if your relay module is active-LOW (common with
@@ -58,6 +59,37 @@
 // Cooldown in milliseconds between consecutive sprays to avoid
 // overwhelming the cat (and your solenoid).
 #define SPRAY_COOLDOWN_MS 5000
+
+// ─── Air Pump System ─────────────────────────────────────────────
+// For reservoir-based pneumatic setups, a second relay controls a
+// 12V diaphragm air pump that fills a reservoir. The solenoid valve
+// (DETERRENT_PIN) releases air on detection.
+//
+// PUMP_MODE_NONE:       No pump — DETERRENT_PIN controls an air can
+//                       or direct solenoid (backward compatible).
+// PUMP_MODE_ON_DEMAND:  Pump runs at startup (pre-charge) and after
+//                       each spray (refill). Quieter, saves power.
+// PUMP_MODE_CONTINUOUS: Pump runs whenever system is not in ERROR
+//                       state. Simplest, always ready.
+#define PUMP_MODE_NONE       0
+#define PUMP_MODE_ON_DEMAND  1
+#define PUMP_MODE_CONTINUOUS 2
+
+#define PUMP_MODE PUMP_MODE_NONE
+
+// Digital pin connected to the relay controlling the air pump.
+#define PUMP_PIN 8
+
+// Set to 1 if your pump relay is active-LOW.
+#define PUMP_ACTIVE_LOW 0
+
+// Duration in ms to run the pump at boot to fill the reservoir
+// initially (on-demand mode only).
+#define PUMP_PRE_CHARGE_MS 3000
+
+// Duration in ms to run the pump after each spray to refill the
+// reservoir (on-demand mode only).
+#define PUMP_REFILL_MS 2000
 
 // ─── Status LED ──────────────────────────────────────────────────
 // Optional LED for visual status feedback when serial is unavailable.

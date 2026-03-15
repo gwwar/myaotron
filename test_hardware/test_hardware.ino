@@ -4,9 +4,10 @@
  * Upload this sketch to verify wiring and component connectivity
  * WITHOUT needing an actual cat. Cycles through each subsystem:
  *
- *   1. Status LED — blinks in each pattern (idle, debounce, spray, error)
+ *   1. Status LED — blinks in each pattern (idle, debounce, spray, refill, error)
  *   2. Deterrent relay — fires a brief test pulse
- *   3. HUSKYLENS 2 — connects and reads one frame
+ *   3. Air pump relay — fires a brief test pulse (if pump enabled)
+ *   4. HUSKYLENS 2 — connects and reads one frame
  *
  * Open Serial Monitor at 9600 baud to see results.
  * Each test prints PASS or FAIL.
@@ -55,6 +56,14 @@ void testStatusLed() {
   Serial.println(F("  Spraying (solid on) — 1s"));
   digitalWrite(STATUS_LED_PIN, HIGH);
   delay(1000);
+
+  Serial.println(F("  Refilling (medium blink) — 2s"));
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(STATUS_LED_PIN, HIGH);
+    delay(200);
+    digitalWrite(STATUS_LED_PIN, LOW);
+    delay(200);
+  }
 
   Serial.println(F("  Error (fast blink) — 2s"));
   for (int i = 0; i < 10; i++) {
@@ -118,10 +127,49 @@ void testDeterrent() {
   Serial.print(F("  Active-low: ")); Serial.println(DETERRENT_ACTIVE_LOW);
 }
 
-// ─── Test 3: HUSKYLENS Connection ────────────────────────────────
+// ─── Test 3: Air Pump Relay ──────────────────────────────────────
+
+void testPump() {
+  Serial.println(F("\n--- Test 3: Air Pump Relay ---"));
+
+#if PUMP_MODE == PUMP_MODE_NONE
+  report("Pump disabled (PUMP_MODE_NONE), skipping", true);
+#else
+  pinMode(PUMP_PIN, OUTPUT);
+
+  // Start in off state
+  #if PUMP_ACTIVE_LOW
+    digitalWrite(PUMP_PIN, HIGH);
+  #else
+    digitalWrite(PUMP_PIN, LOW);
+  #endif
+
+  Serial.println(F("  Activating pump relay for 500ms..."));
+  Serial.println(F("  (You should hear the pump motor start)"));
+
+  #if PUMP_ACTIVE_LOW
+    digitalWrite(PUMP_PIN, LOW);
+    delay(500);
+    digitalWrite(PUMP_PIN, HIGH);
+  #else
+    digitalWrite(PUMP_PIN, HIGH);
+    delay(500);
+    digitalWrite(PUMP_PIN, LOW);
+  #endif
+
+  delay(500);
+  Serial.println(F("  Deactivated."));
+
+  report("Pump relay pulsed (verify motor sound)", true);
+  Serial.print(F("  Pin: D")); Serial.println(PUMP_PIN);
+  Serial.print(F("  Active-low: ")); Serial.println(PUMP_ACTIVE_LOW);
+#endif
+}
+
+// ─── Test 4: HUSKYLENS Connection ────────────────────────────────
 
 void testHuskylens() {
-  Serial.println(F("\n--- Test 3: HUSKYLENS 2 Connection ---"));
+  Serial.println(F("\n--- Test 4: HUSKYLENS 2 Connection ---"));
 
   Wire.begin();
   Serial.println(F("  Attempting I2C connection..."));
@@ -172,6 +220,7 @@ void setup() {
 
   testStatusLed();
   testDeterrent();
+  testPump();
   testHuskylens();
 
   Serial.println(F("\n========================================="));

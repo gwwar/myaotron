@@ -13,7 +13,8 @@
  * Hardware:
  *   - Arduino Uno/Mega or ESP32
  *   - HUSKYLENS 2 (I2C connection)
- *   - Relay/MOSFET on DETERRENT_PIN → solenoid valve or air pump
+ *   - Relay/MOSFET on DETERRENT_PIN → solenoid valve (air release)
+ *   - (Optional) Second relay on PUMP_PIN → 12V diaphragm air pump
  *
  * Setup:
  *   1. On HUSKYLENS 2, enter Object Recognition mode.
@@ -65,6 +66,7 @@ enum SystemState {
   STATE_IDLE,
   STATE_DEBOUNCING,
   STATE_SPRAYING,
+  STATE_REFILLING,
   STATE_COOLDOWN,
   STATE_ERROR
 };
@@ -74,6 +76,7 @@ uint8_t debounceCount = 0;
 unsigned long sprayStartTime = 0;
 unsigned long lastSprayEndTime = 0;
 unsigned long lastReconnectAttempt = 0;
+unsigned long refillStartTime = 0;
 bool huskyConnected = false;
 uint16_t sprayCount = 0;
 
@@ -88,6 +91,18 @@ void setDeterrent(bool active) {
   digitalWrite(DETERRENT_PIN, active ? LOW : HIGH);
 #else
   digitalWrite(DETERRENT_PIN, active ? HIGH : LOW);
+#endif
+}
+
+// ─── Pump helpers ────────────────────────────────────────────────
+
+void setPump(bool active) {
+#if PUMP_MODE != PUMP_MODE_NONE
+  #if PUMP_ACTIVE_LOW
+    digitalWrite(PUMP_PIN, active ? LOW : HIGH);
+  #else
+    digitalWrite(PUMP_PIN, active ? HIGH : LOW);
+  #endif
 #endif
 }
 
@@ -110,6 +125,14 @@ void updateStatusLed() {
       break;
     case STATE_SPRAYING:
       digitalWrite(STATUS_LED_PIN, HIGH);
+      break;
+    case STATE_REFILLING:
+      // Medium blink: 400ms period
+      if (now - lastLedToggle >= 200) {
+        ledState = !ledState;
+        digitalWrite(STATUS_LED_PIN, ledState);
+        lastLedToggle = now;
+      }
       break;
     case STATE_COOLDOWN:
       digitalWrite(STATUS_LED_PIN, LOW);
@@ -293,9 +316,13 @@ bool detectCatOnCounter() {
 // ─── Main state machine ─────────────────────────────────────────
 
 void setup() {
-  // Safety first: ensure deterrent is off before anything else
+  // Safety first: ensure deterrent and pump are off before anything else
   pinMode(DETERRENT_PIN, OUTPUT);
   setDeterrent(false);
+#if PUMP_MODE != PUMP_MODE_NONE
+  pinMode(PUMP_PIN, OUTPUT);
+  setPump(false);
+#endif
 
 #if STATUS_LED_PIN >= 0
   pinMode(STATUS_LED_PIN, OUTPUT);
@@ -312,6 +339,7 @@ void setup() {
   Serial.println(PERSON_EXCLUSION_ENABLED ? F("ON") : F("OFF"));
   Serial.print(F("Watchdog: "));
   Serial.println(WATCHDOG_ENABLED ? F("ON") : F("OFF"));
+  Serial.print(F("Pump mode: ")); Serial.println(PUMP_MODE);
 
   while (!tryConnect()) {
     Serial.println(F("HUSKYLENS 2 not found. Check wiring. Retrying..."));
@@ -321,6 +349,18 @@ void setup() {
   }
 
   watchdogInit();
+
+#if PUMP_MODE == PUMP_MODE_ON_DEMAND
+  Serial.println(F("Pre-charging reservoir..."));
+  setPump(true);
+  delay(PUMP_PRE_CHARGE_MS);
+  setPump(false);
+  Serial.println(F("Pre-charge complete."));
+#elif PUMP_MODE == PUMP_MODE_CONTINUOUS
+  Serial.println(F("Starting continuous pump."));
+  setPump(true);
+#endif
+
   state = STATE_IDLE;
   Serial.println(F("Ready — watching for cats on counter..."));
 }
@@ -396,13 +436,34 @@ void loop() {
     case STATE_SPRAYING:
       if (now - sprayStartTime >= SPRAY_DURATION_MS) {
         setDeterrent(false);
+#if PUMP_MODE == PUMP_MODE_ON_DEMAND
+        // Refill the reservoir after spray
+        setPump(true);
+        refillStartTime = now;
+        state = STATE_REFILLING;
+        #if DEBUG_SERIAL
+        Serial.println(F("Spray complete, refilling reservoir."));
+        #endif
+#else
         lastSprayEndTime = now;
         state = STATE_COOLDOWN;
         #if DEBUG_SERIAL
         Serial.println(F("Spray complete, entering cooldown."));
         #endif
+#endif
       }
       // Non-blocking: loop continues running during spray
+      break;
+
+    case STATE_REFILLING:
+      if (now - refillStartTime >= PUMP_REFILL_MS) {
+        setPump(false);
+        lastSprayEndTime = now;
+        state = STATE_COOLDOWN;
+        #if DEBUG_SERIAL
+        Serial.println(F("Refill complete, entering cooldown."));
+        #endif
+      }
       break;
 
     case STATE_COOLDOWN:
@@ -417,7 +478,16 @@ void loop() {
 
     case STATE_ERROR:
       setDeterrent(false);
+#if PUMP_MODE == PUMP_MODE_ON_DEMAND
+      setPump(false);
+#elif PUMP_MODE == PUMP_MODE_CONTINUOUS
+      setPump(false);
+#endif
       ensureConnected();
+#if PUMP_MODE == PUMP_MODE_CONTINUOUS
+      // Restart pump when recovered
+      if (huskyConnected) setPump(true);
+#endif
       break;
   }
 

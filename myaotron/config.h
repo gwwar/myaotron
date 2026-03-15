@@ -77,4 +77,18 @@
 #define DEBUG_SERIAL 1
 #define SERIAL_BAUD 9600
 
+// ─── Loop Timing ─────────────────────────────────────────────────
+// Delay in milliseconds between each detection loop iteration.
+// Lower = faster response, higher CPU/I2C load.
+// At 200ms, debounce of 3 frames ≈ 600ms confirmation window.
+#define LOOP_DELAY_MS 200
+
+// ─── Watchdog Timer ──────────────────────────────────────────────
+// Enables hardware watchdog to auto-reset the board if the main
+// loop hangs (e.g. I2C bus lockup). Highly recommended for
+// unattended deployment.
+// AVR: fixed 8s timeout. ESP32: configurable via WATCHDOG_TIMEOUT_S.
+#define WATCHDOG_ENABLED 1
+#define WATCHDOG_TIMEOUT_S 10
+
 #endif // MYAOTRON_CONFIG_H

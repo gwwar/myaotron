@@ -5,10 +5,10 @@
  * counters and trigger a spray deterrent (air puff or water).
  *
  * Detection modes (set in config.h):
- *   Mode 3: Dual-object overlap — triggers when a "cat" bbox overlaps
- *           a "dining table" bbox (default, most robust).
- *   Mode 1: Camera-only — triggers on any cat detection in frame.
- *           Mount camera aimed only at the counter surface.
+ *   MODE_DUAL_OVERLAP: triggers when a "cat" bbox overlaps a "dining
+ *     table" bbox (default, most robust).
+ *   MODE_CAMERA_ONLY: triggers on any cat detection in frame. Mount
+ *     camera aimed only at the counter surface.
  *
  * Hardware:
  *   - Arduino Uno/Mega or ESP32
@@ -26,6 +26,36 @@
 #include "DFRobot_HuskylensV2.h"
 #include "config.h"
 #include "detection_logic.h"
+
+// ─── Watchdog ────────────────────────────────────────────────────
+#if WATCHDOG_ENABLED
+  #ifdef ESP32
+    #include <esp_task_wdt.h>
+  #else
+    #include <avr/wdt.h>
+  #endif
+#endif
+
+static inline void watchdogInit() {
+#if WATCHDOG_ENABLED
+  #ifdef ESP32
+    esp_task_wdt_init(WATCHDOG_TIMEOUT_S, true);
+    esp_task_wdt_add(NULL);
+  #else
+    wdt_enable(WDTO_8S);
+  #endif
+#endif
+}
+
+static inline void watchdogReset() {
+#if WATCHDOG_ENABLED
+  #ifdef ESP32
+    esp_task_wdt_reset();
+  #else
+    wdt_reset();
+  #endif
+#endif
+}
 
 HuskylensV2 huskylens;
 
@@ -45,6 +75,7 @@ unsigned long sprayStartTime = 0;
 unsigned long lastSprayEndTime = 0;
 unsigned long lastReconnectAttempt = 0;
 bool huskyConnected = false;
+uint16_t sprayCount = 0;
 
 // LED blink tracking
 unsigned long lastLedToggle = 0;
@@ -262,9 +293,7 @@ bool detectCatOnCounter() {
 // ─── Main state machine ─────────────────────────────────────────
 
 void setup() {
-  Serial.begin(SERIAL_BAUD);
-  Wire.begin();
-
+  // Safety first: ensure deterrent is off before anything else
   pinMode(DETERRENT_PIN, OUTPUT);
   setDeterrent(false);
 
@@ -273,11 +302,16 @@ void setup() {
   digitalWrite(STATUS_LED_PIN, LOW);
 #endif
 
+  Serial.begin(SERIAL_BAUD);
+  Wire.begin();
+
   Serial.println(F("myaotron starting..."));
   Serial.print(F("Detection mode: ")); Serial.println(DETECTION_MODE);
   Serial.print(F("Debounce frames: ")); Serial.println(DEBOUNCE_FRAMES);
   Serial.print(F("Person exclusion: "));
   Serial.println(PERSON_EXCLUSION_ENABLED ? F("ON") : F("OFF"));
+  Serial.print(F("Watchdog: "));
+  Serial.println(WATCHDOG_ENABLED ? F("ON") : F("OFF"));
 
   while (!tryConnect()) {
     Serial.println(F("HUSKYLENS 2 not found. Check wiring. Retrying..."));
@@ -286,6 +320,7 @@ void setup() {
     delay(1000);
   }
 
+  watchdogInit();
   state = STATE_IDLE;
   Serial.println(F("Ready — watching for cats on counter..."));
 }
@@ -293,6 +328,7 @@ void setup() {
 void loop() {
   unsigned long now = millis();
 
+  watchdogReset();
   updateStatusLed();
 
   switch (state) {
@@ -305,8 +341,10 @@ void loop() {
           state = STATE_SPRAYING;
           sprayStartTime = now;
           setDeterrent(true);
+          sprayCount++;
           #if DEBUG_SERIAL
-          Serial.println(F(">>> SPRAY ACTIVATED <<<"));
+          Serial.print(F(">>> SPRAY #")); Serial.print(sprayCount);
+          Serial.println(F(" ACTIVATED <<<"));
           #endif
         } else {
           state = STATE_DEBOUNCING;
@@ -332,8 +370,10 @@ void loop() {
           state = STATE_SPRAYING;
           sprayStartTime = now;
           setDeterrent(true);
+          sprayCount++;
           #if DEBUG_SERIAL
-          Serial.println(F(">>> SPRAY ACTIVATED <<<"));
+          Serial.print(F(">>> SPRAY #")); Serial.print(sprayCount);
+          Serial.println(F(" ACTIVATED <<<"));
           #endif
         }
       } else {
@@ -381,5 +421,5 @@ void loop() {
       break;
   }
 
-  delay(200);
+  delay(LOOP_DELAY_MS);
 }

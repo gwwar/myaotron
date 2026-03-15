@@ -246,28 +246,28 @@ bool detectCatOnCounter() {
     return false;
   }
 
-#if DETECTION_MODE == 1
-  // Mode 1: Any cat in frame = cat on counter.
+#if DETECTION_MODE == MODE_CAMERA_ONLY
+  // Camera-only: Any cat in frame = cat on counter.
   int16_t numCats = huskylens.getCachedResultNumByID(ALGORITHM_OBJECT_RECOGNITION, CAT_ID);
   for (int16_t i = 0; i < numCats; i++) {
     Result *r = huskylens.getCachedIndexResultByID(ALGORITHM_OBJECT_RECOGNITION, CAT_ID, i);
     BBox catBox = resultToBBox(r);
     if (catBox.valid) {
       #if DEBUG_SERIAL
-      Serial.print(F("[MODE 1] Cat detected, conf="));
+      Serial.print(F("[CAMERA] Cat detected, conf="));
       Serial.println(catBox.confidence);
       #endif
       return true;
     }
   }
 
-#elif DETECTION_MODE == 3
-  // Mode 3: Cat + surface overlap detection.
+#elif DETECTION_MODE == MODE_DUAL_OVERLAP
+  // Dual-overlap: Cat + surface overlap detection.
   BBox surfaceBox = getBBoxForID(SURFACE_ID);
 
   if (!surfaceBox.valid) {
     #if DEBUG_SERIAL
-    Serial.println(F("[MODE 3] Surface not detected."));
+    Serial.println(F("[OVERLAP] Surface not detected."));
     #endif
     return false;
   }
@@ -276,7 +276,7 @@ bool detectCatOnCounter() {
 
   if (anyCatOnSurface(surfaceBox)) {
     #if DEBUG_SERIAL
-    Serial.println(F("[MODE 3] Cat ON counter!"));
+    Serial.println(F("[OVERLAP] Cat ON counter!"));
     #endif
     return true;
   }

@@ -2,14 +2,16 @@
 #define MYAOTRON_CONFIG_H
 
 // ─── Detection Mode ──────────────────────────────────────────────
-// DETECTION_MODE 1: Camera-only (approach 1)
-//   Triggers on ANY cat detection in frame. Mount camera so it only
-//   sees the counter surface.
+// MODE_CAMERA_ONLY: Triggers on ANY cat detection in frame. Mount
+//   camera so it only sees the counter surface.
 //
-// DETECTION_MODE 3: Dual-object overlap (approach 3)
-//   Triggers only when a cat bounding box overlaps with a detected
-//   surface (dining table). More robust against false positives.
-#define DETECTION_MODE 3
+// MODE_DUAL_OVERLAP: Triggers only when a cat bounding box overlaps
+//   with a detected surface (dining table). More robust against
+//   false positives.
+#define MODE_CAMERA_ONLY  1
+#define MODE_DUAL_OVERLAP 2
+
+#define DETECTION_MODE MODE_DUAL_OVERLAP
 
 // ─── HUSKYLENS Object IDs ────────────────────────────────────────
 // Learn "cat" as ID 1 and "dining table" as ID 2 on your HUSKYLENS 2.

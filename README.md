@@ -73,7 +73,7 @@ Before uploading the sketch, teach HUSKYLENS 2 to recognize your cat and counter
 
 Edit `myaotron/config.h` to adjust:
 
-- **`DETECTION_MODE`** — `3` for dual-object overlap (default), `1` for camera-only
+- **`DETECTION_MODE`** — `MODE_DUAL_OVERLAP` (default) or `MODE_CAMERA_ONLY`
 - **`MIN_CONFIDENCE`** — detection confidence threshold, 0–100 (default: `30`)
 - **`DEBOUNCE_FRAMES`** — consecutive detection frames required before spraying (default: `3`)
 - **`OVERLAP_THRESHOLD`** — how much the cat must overlap the surface (default: `0.3`)

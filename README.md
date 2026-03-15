@@ -10,8 +10,8 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 
 | Mode | Strategy | Best For |
 |------|----------|----------|
-| **Mode 3** (default) | Dual-object overlap — triggers only when a cat's bounding box overlaps with a detected counter surface | General use, fewer false positives |
-| **Mode 1** (fallback) | Camera-only — triggers on any cat detection in frame | Camera aimed exclusively at the counter |
+| **MODE_DUAL_OVERLAP** (default) | Dual-object overlap — triggers only when a cat's bounding box overlaps with a detected counter surface | General use, fewer false positives |
+| **MODE_CAMERA_ONLY** (fallback) | Camera-only — triggers on any cat detection in frame | Camera aimed exclusively at the counter |
 
 When a cat-on-counter event is detected, the system activates a relay/MOSFET that controls a solenoid valve (water mist) or air pump (puff of air).
 
@@ -83,6 +83,10 @@ Edit `myaotron/config.h` to adjust:
 - **`SPRAY_DURATION_MS`** — how long each spray lasts (default: `500`ms)
 - **`SPRAY_COOLDOWN_MS`** — minimum time between sprays (default: `5000`ms)
 - **`STATUS_LED_PIN`** — LED pin for visual status feedback (default: `LED_BUILTIN`, `-1` to disable)
+- **`LOOP_DELAY_MS`** — delay between detection loop iterations in ms (default: `200`)
+- **`WATCHDOG_ENABLED`** — hardware watchdog for auto-reset on hang (default: `1`)
+- **`WATCHDOG_TIMEOUT_S`** — watchdog timeout in seconds, ESP32 only (default: `10`)
+- **`RECONNECT_INTERVAL_MS`** — retry interval for HUSKYLENS reconnection (default: `3000`)
 
 ### 4. Upload
 
@@ -91,7 +95,7 @@ Edit `myaotron/config.h` to adjust:
 3. Upload the sketch
 4. Open Serial Monitor (9600 baud) to see detection output
 
-## Detection Logic (Mode 3)
+## Detection Logic (MODE_DUAL_OVERLAP)
 
 ```
 ┌─────────────────────────────────────┐

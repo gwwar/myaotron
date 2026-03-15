@@ -38,21 +38,25 @@ Below is everything you need, with links to trusted stores. The "core" items are
 |---|------|-------------|--------|
 | 9 | **12V normally-closed solenoid valve** (1/4" NPT, direct-acting, rated for air) — releases air when activated. Get a **pneumatic** valve, not a water valve. | [U.S. Solid (pneumatic)](https://ussolid.com/products/u-s-solid-1-4-npt-pneumatic-electric-solenoid-valve-12-v-dc-2-way-2-position-normally-closed-html) · [Amazon (search "12V pneumatic solenoid valve 1/4 direct acting")](https://www.amazon.com/s?k=12V+pneumatic+solenoid+valve+1%2F4+direct+acting) | $10–18 |
 | 10 | **12V mini diaphragm air pump** — fills the reservoir with pressurized air. Must be 12V to share the power supply. | [SparkFun](https://www.sparkfun.com/vacuum-pump-12v.html) · [Amazon (search "12V mini diaphragm air pump")](https://www.amazon.com/s?k=12V+mini+diaphragm+air+pump) | $10–15 |
-| 11 | **Air reservoir** (~0.5L) — holds pressurized air between sprays. A small sealed PVC pipe cap, plastic bottle with fittings, or a [small pneumatic tank](https://www.amazon.com/s?k=small+air+reservoir+tank+pneumatic) works | Hardware store / Amazon | $5–10 |
+| 11 | **Air reservoir** (~0.5L) — holds pressurized air between sprays. Use a small ABS container, polyethylene bottle with barb fittings, or a [small pneumatic tank](https://www.amazon.com/s?k=small+air+reservoir+tank+pneumatic). **⚠️ Do NOT use PVC pipe** — it can shatter into sharp fragments under air pressure. | Hardware store / Amazon | $5–10 |
 | 12 | **One-way check valve** (1/4") — prevents air from flowing backward out of the reservoir | [Amazon (search "1/4 inline check valve air")](https://www.amazon.com/s?k=1%2F4+inline+check+valve+air) | $3–5 |
 | 13 | **Adjustable pressure relief valve** (≤10 PSI) — **critical safety part** that prevents over-pressurization | [Amazon (search "adjustable pressure relief valve 10 PSI")](https://www.amazon.com/s?k=adjustable+pressure+relief+valve+10+psi) | $5–10 |
 | 14 | **1/4" ID silicone or polyurethane tubing** (~3 ft) — connects all the pneumatic components. Make sure the inner diameter matches your fittings (1/4" ID = ~6mm). | [Amazon (search "1/4 ID silicone tubing")](https://www.amazon.com/s?k=1%2F4+ID+silicone+tubing) | $5–8 |
-| 15 | **Hose barb fittings + hose clamps** — secure the tubing to each component | Hardware store / Amazon | $5 |
-| 16 | **Wide-bore nozzle or aquarium air stone** — diffuses the air into a gentle puff (not a focused jet) | [Amazon (search "aquarium air stone")](https://www.amazon.com/s?k=aquarium+air+stone) | $2–5 |
+| 15 | **Hose barb fittings + hose clamps** — secure the tubing to each component. You'll need 1/4" NPT-to-barb adapters for the solenoid valve, and possibly smaller barb adapters for the pump if its ports don't match 1/4" tubing. | Hardware store / Amazon | $5–8 |
+| 16 | **T-fitting** (1/4" barb or NPT) — connects the pressure relief valve to the reservoir line | [Amazon (search "1/4 barb T-fitting")](https://www.amazon.com/s?k=1%2F4+barb+tee+fitting) | $3–5 |
+| 17 | **Wide-bore nozzle or aquarium air stone** — diffuses the air into a gentle puff (not a focused jet) | [Amazon (search "aquarium air stone")](https://www.amazon.com/s?k=aquarium+air+stone) | $2–5 |
+| 18 | **Small pressure gauge** (0–15 PSI, 1/4" NPT) — lets you see the reservoir pressure. Optional but highly recommended for first-time setup and tuning. | [Amazon (search "0-15 PSI pressure gauge 1/4 NPT")](https://www.amazon.com/s?k=0-15+PSI+pressure+gauge+1%2F4+NPT) | $5–8 |
 
-### Power
+### Power & Protection
 
 | # | Item | Where to Buy | ~Price |
 |---|------|-------------|--------|
-| 17 | **12V DC power supply** (at least 2A) — powers the solenoid and pump. A 1A supply is NOT enough; the solenoid (~400mA) and pump (~1A) run simultaneously. | [Amazon (search "12V 2A DC power supply barrel jack")](https://www.amazon.com/s?k=12V+2A+DC+power+supply+barrel+jack+UL) | $8–12 |
-| 18 | **DC barrel jack to screw terminal adapter** — makes it easy to connect the 12V supply to wires without soldering | [Adafruit (PID 368)](https://www.adafruit.com/product/368) · [Amazon](https://www.amazon.com/s?k=DC+barrel+jack+screw+terminal) | $3 |
+| 19 | **12V DC power supply** (at least 2A) — powers the solenoid and pump. A 1A supply is NOT enough; the solenoid (~400mA) and pump (~1A) run simultaneously. | [Amazon (search "12V 2A DC power supply barrel jack")](https://www.amazon.com/s?k=12V+2A+DC+power+supply+barrel+jack+UL) | $8–12 |
+| 20 | **DC barrel jack to screw terminal adapter** — makes it easy to connect the 12V supply to wires without soldering | [Adafruit (PID 368)](https://www.adafruit.com/product/368) · [Amazon](https://www.amazon.com/s?k=DC+barrel+jack+screw+terminal) | $3 |
+| 21 | **Inline fuse holder + 2A fuse** — protects against short circuits in the 12V wiring. Place between the power supply and the relays. | [Amazon (search "inline fuse holder 2A")](https://www.amazon.com/s?k=inline+fuse+holder+2A) | $5 |
+| 22 | **Flyback diodes** (1N4007 or similar, ×2) — place one across each 12V load (solenoid and pump) to absorb voltage spikes when they switch off. Protects relay contacts from arcing. | [Adafruit](https://www.adafruit.com/product/755) · [Amazon](https://www.amazon.com/s?k=1N4007+diode) | $2 |
 
-**Estimated total: $90–140** (depending on what you already have).
+**Estimated total: $100–160** (depending on what you already have).
 
 > **Tip for beginners:** If you want to test the electronics before building the pneumatic system, you can start with just items 1–8. The relay will click audibly when a cat is detected, confirming everything works before you add air.
 
@@ -106,6 +110,8 @@ The solenoid and pump need 12V, which comes from the external power supply — N
                     └──────┬─────────────────┬────────────┘
                       12V (+)              GND (-)
                         │                    │
+                    [2A Fuse]                │
+                        │                    │
             ┌───────────┴──────────┐         │
             │                      │         │
     ┌───────┴───────┐     ┌───────┴───────┐  │
@@ -119,16 +125,20 @@ The solenoid and pump need 12V, which comes from the external power supply — N
     └───────┬───────┘     └───────┬───────┘  │
             │                      │         │
      Solenoid (+)           Pump (+)         │
-            │                      │         │
+      ┌─┤▶├─┐               ┌─┤▶├─┐         │
+      │diode │               │diode│         │
+      └──┬───┘               └──┬──┘         │
      Solenoid (-)───────── Pump (-)──────────┘
 ```
 
 **What this means in plain English:**
-1. Strip a small section of insulation from two wires (or use screw terminals)
-2. Connect the **12V (+)** from the power supply to the **COM** (common) terminal on each relay channel
-3. Connect the **NO** (normally open) terminal on relay channel 1 to the **positive (+)** wire of the solenoid valve
-4. Connect the **NO** terminal on relay channel 2 to the **positive (+)** wire of the air pump
-5. Connect the **negative (-)** wires of both the solenoid and pump back to the **GND (-)** of the power supply
+1. Connect the **12V (+)** from the power supply through the **inline fuse holder**, then to the **COM** (common) terminal on each relay channel
+2. Connect the **NO** (normally open) terminal on relay channel 1 to the **positive (+)** wire of the solenoid valve
+3. Connect the **NO** terminal on relay channel 2 to the **positive (+)** wire of the air pump
+4. Connect the **negative (-)** wires of both the solenoid and pump back to the **GND (-)** of the power supply
+5. **Add a flyback diode** across each load: place a 1N4007 diode with the **striped end (cathode) toward the positive (+)** wire and the **other end toward negative (-)**. This absorbs voltage spikes when the relay switches off.
+
+> **Why flyback diodes?** Solenoids and motors are inductors. When you cut power to an inductor, the collapsing magnetic field creates a brief voltage spike that can arc across the relay contacts, gradually destroying them. The diode provides a safe path for this spike. Without diodes, your relays may fail after weeks of use.
 
 > **What are COM and NO?** Each relay has three screw terminals:
 > - **COM** (common) — the input wire goes here
@@ -142,23 +152,29 @@ Connect the air components with tubing in this exact order:
 ```
 [Air Pump outlet] → [Check Valve] → [Reservoir] → [Solenoid Valve] → [Nozzle]
                                          │
-                                  [Pressure Relief Valve]
-                                  (set to ≤10 PSI)
+                                    [T-fitting]
+                                      /     \
+                            [Pressure    [Pressure
+                             Relief       Gauge]
+                             Valve]
 ```
 
-1. Connect tubing from the **pump's air outlet** to the **inlet side of the check valve** (the arrow on the check valve should point *away* from the pump)
+1. Connect tubing from the **pump's air outlet** to the **inlet side of the check valve** (the arrow on the check valve should point *away* from the pump). If the pump's barb is smaller than 1/4", use a short piece of smaller tubing and a reducer barb fitting.
 2. Connect the **outlet side of the check valve** to the **reservoir inlet**
-3. Attach the **pressure relief valve** to the reservoir (via a T-fitting or second port) — set it to **10 PSI or less**
-4. Connect the **reservoir outlet** to the **solenoid valve inlet**
+3. On the reservoir outlet line, install a **T-fitting**. Connect one branch to the **pressure relief valve** (set to ≤10 PSI) and optionally the **pressure gauge**
+4. Connect the remaining T-fitting branch to the **solenoid valve inlet**
 5. Connect the **solenoid valve outlet** to the **nozzle** (an aquarium air stone works great)
 6. Secure all connections with **hose clamps** to prevent air leaks
 
 > **⚠️ Safety notes:**
+> - **Do NOT use PVC pipe** as a reservoir — it can shatter into sharp fragments under air pressure. Use ABS, polyethylene, or a purpose-built tank
 > - The **check valve** prevents air from flowing backward into the pump when it's off
 > - The **pressure relief valve** is your hardware safety limit — it physically vents air if pressure exceeds your set limit, so the reservoir can never over-pressurize even if the software malfunctions
-> - **10 PSI is plenty** to startle a cat. Higher pressure is unnecessary and could be harmful
+> - **5–10 PSI is plenty** to startle a cat. Higher pressure is unnecessary and could be harmful
 > - Use a **wide-bore nozzle** (like an air stone) to produce a broad, gentle puff — never a focused jet
+> - Mount the nozzle **at least 1–2 feet** from where the cat would be — closer is more forceful than you'd expect
 > - Aim the nozzle at the counter surface, **not directly at where the cat's face would be**
+> - Consider placing the electronics in a **basic enclosure** (plastic project box) to protect from kitchen splatter and humidity
 
 ### Step 7: Power Everything On
 

@@ -7,16 +7,16 @@ Detects when your cat jumps on the kitchen counter and gives them a harmless puf
 ## How It Works
 
 ```
-┌──────────┐     I2C      ┌─────────┐   D7    ┌───────┐   12V    ┌──────────┐
-│HUSKYLENS │────────────►│ Arduino │────────►│ Relay │────────►│  Push    │
-│    2     │              │   Uno   │         │Module │         │ Solenoid │
-└──────────┘              └─────────┘         └───────┘         └────┬─────┘
-                                                                     │ pushes
-                                                                     ▼
-                                                               ┌──────────┐
-                                                               │  SSSCat  │
-                                                               │   Can    │──► puff!
-                                                               └──────────┘
+┌──────────┐       ┌─────────┐       ┌───────┐       ┌──────────┐
+│HUSKYLENS │─I2C──►│ Arduino │──D7──►│ Relay │─12V──►│  Push    │
+│    2     │       │   Uno   │       │Module │       │ Solenoid │
+└──────────┘       └─────────┘       └───────┘       └────┬─────┘
+                                                          │ pushes
+                                                          ▼
+                                                    ┌──────────┐
+                                                    │  SSSCat  │
+                                                    │   Can    │──► puff!
+                                                    └──────────┘
 ```
 
 The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to detect both **cats** and **surfaces** (dining table/counter) in the camera frame. When a cat-on-counter event is confirmed, the Arduino energizes a push solenoid that physically presses the SSSCat can's trigger button, releasing a short burst of air.

@@ -66,18 +66,23 @@ Before uploading the sketch, teach HUSKYLENS 2 to recognize your cat and counter
 1. Power on HUSKYLENS 2 and select **Object Recognition**
 2. Point the camera at your **cat** and press **Button-A** to learn it as **ID 1**
 3. Point the camera at your **counter/table surface** and press **Button-A** to learn it as **ID 2**
-4. (Optional) Use **Export Model** in settings to save your trained model
+4. (Optional) Point the camera at a **person** and press **Button-A** to learn as **ID 3** (enables human exclusion)
+5. (Optional) Use **Export Model** in settings to save your trained model
 
 ### 3. Configure
 
 Edit `myaotron/config.h` to adjust:
 
 - **`DETECTION_MODE`** — `3` for dual-object overlap (default), `1` for camera-only
+- **`MIN_CONFIDENCE`** — detection confidence threshold, 0–100 (default: `30`)
+- **`DEBOUNCE_FRAMES`** — consecutive detection frames required before spraying (default: `3`)
+- **`OVERLAP_THRESHOLD`** — how much the cat must overlap the surface (default: `0.3`)
+- **`PERSON_EXCLUSION_ENABLED`** — suppress spray when a person is at the counter (default: `1`)
 - **`DETERRENT_PIN`** — digital pin connected to your relay (default: `7`)
+- **`DETERRENT_ACTIVE_LOW`** — set to `1` for active-low relay modules (default: `0`)
 - **`SPRAY_DURATION_MS`** — how long each spray lasts (default: `500`ms)
 - **`SPRAY_COOLDOWN_MS`** — minimum time between sprays (default: `5000`ms)
-- **`MIN_CONFIDENCE`** — detection confidence threshold (default: `30`)
-- **`OVERLAP_THRESHOLD`** — how much the cat must overlap the surface (default: `0.3`)
+- **`STATUS_LED_PIN`** — LED pin for visual status feedback (default: `LED_BUILTIN`, `-1` to disable)
 
 ### 4. Upload
 
@@ -104,10 +109,38 @@ Edit `myaotron/config.h` to adjust:
 │                                     │
 └─────────────────────────────────────┘
 
-If cat bbox overlaps surface bbox:
-  → horizontal overlap ≥ 30%
-  → cat's bottom edge within surface bounds
-  → SPRAY!
+Detection pipeline:
+  1. Check confidence ≥ MIN_CONFIDENCE
+  2. Check horizontal overlap ≥ 30%
+  3. Check cat's bottom edge within surface bounds
+  4. Check no person at counter (if exclusion enabled)
+  5. Require DEBOUNCE_FRAMES consecutive positive frames
+  6. → SPRAY! (non-blocking)
+```
+
+## State Machine
+
+```
+  ┌───────┐  cat detected   ┌────────────┐  N frames   ┌──────────┐
+  │ IDLE  │ ──────────────► │ DEBOUNCING │ ──────────► │ SPRAYING │
+  └───┬───┘                 └─────┬──────┘             └────┬─────┘
+      │                       detection lost                │ timer done
+      │                           │                         ▼
+      │                           ▼                    ┌──────────┐
+      │                      ┌────────┐                │ COOLDOWN │
+      │◄─────────────────────│  IDLE  │◄───────────────┘──────────┘
+      │                      └────────┘
+      │  I2C failure
+      ▼
+  ┌───────┐  reconnected
+  │ ERROR │ ──────────────► IDLE
+  └───────┘
+
+Status LED:
+  Off        = idle
+  Slow blink = debouncing (cat detected, confirming)
+  Solid      = spraying
+  Fast blink = HUSKYLENS error
 ```
 
 ## Troubleshooting
@@ -116,9 +149,12 @@ If cat bbox overlaps surface bbox:
 |---------|----------|
 | "HUSKYLENS 2 not found" | Check I2C wiring (SDA→A4, SCL→A5). Ensure separate USB-C power to HUSKYLENS 2 |
 | Cat detected but no spray | Check relay wiring on pin D7. Open Serial Monitor to see detection output |
-| Too many false positives | Increase `MIN_CONFIDENCE` or `OVERLAP_THRESHOLD` in config.h |
+| Too many false positives | Increase `MIN_CONFIDENCE`, `OVERLAP_THRESHOLD`, or `DEBOUNCE_FRAMES` in config.h |
 | Sprays when cat is on floor | Make sure counter is learned as ID 2. Try repositioning camera angle |
+| Sprays when I'm at the counter | Learn "person" as ID 3 and ensure `PERSON_EXCLUSION_ENABLED` is `1` |
 | Counter not detected | Lower the Detection Threshold in HUSKYLENS 2 settings. Re-learn the surface |
+| LED blinking fast | HUSKYLENS 2 disconnected — check I2C wiring and USB-C power |
+| Relay clicks but no spray | Check if your relay is active-low; set `DETERRENT_ACTIVE_LOW` to `1` |
 
 ## License
 

@@ -109,6 +109,8 @@ Edit `myaotron/config.h` to adjust:
 - **`WATCHDOG_ENABLED`** — hardware watchdog for auto-reset on hang (default: `1`)
 - **`WATCHDOG_TIMEOUT_S`** — watchdog timeout in seconds, ESP32 only (default: `10`)
 - **`RECONNECT_INTERVAL_MS`** — retry interval for HUSKYLENS reconnection (default: `3000`)
+- **`DEBUG_SERIAL`** — enable serial debug output (default: `1`)
+- **`SERIAL_BAUD`** — serial baud rate (default: `9600`)
 
 ### 4. Upload
 
@@ -167,7 +169,7 @@ Note: REFILLING state only active when PUMP_MODE is PUMP_MODE_ON_DEMAND.
 When PUMP_MODE_NONE or PUMP_MODE_CONTINUOUS, SPRAYING goes directly to COOLDOWN.
 
 Status LED:
-  Off          = idle
+  Off          = idle / cooldown
   Slow blink   = debouncing (cat detected, confirming)
   Solid        = spraying
   Medium blink = refilling reservoir

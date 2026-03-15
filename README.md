@@ -143,6 +143,29 @@ Status LED:
   Fast blink = HUSKYLENS error
 ```
 
+## Testing
+
+### Desktop Unit Tests
+
+The geometry logic (bounding box overlap, vertical positioning, confidence check) is extracted into `detection_logic.h` and tested on desktop with no Arduino dependencies:
+
+```bash
+cd test && make
+```
+
+### Hardware Integration Test
+
+Upload `test_hardware/test_hardware.ino` to verify wiring without needing an actual cat:
+
+1. Open in Arduino IDE and upload
+2. Open Serial Monitor (9600 baud)
+3. The sketch cycles through:
+   - **LED test** — blinks in each status pattern (verify visually)
+   - **Relay test** — fires two brief pulses (listen for clicks)
+   - **HUSKYLENS test** — connects via I2C and reads a frame
+
+Each subsystem reports PASS/FAIL on Serial.
+
 ## Troubleshooting
 
 | Problem | Solution |

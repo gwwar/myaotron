@@ -25,6 +25,7 @@
 #include <Wire.h>
 #include "DFRobot_HuskylensV2.h"
 #include "config.h"
+#include "detection_logic.h"
 
 HuskylensV2 huskylens;
 
@@ -130,12 +131,7 @@ bool ensureConnected() {
 }
 
 // ─── Bounding box helpers ────────────────────────────────────────
-
-struct BBox {
-  int16_t x, y, w, h;
-  int8_t confidence;
-  bool valid;
-};
+// BBox struct and geometry functions are in detection_logic.h
 
 BBox resultToBBox(Result *r) {
   BBox box = {0, 0, 0, 0, 0, false};
@@ -153,30 +149,6 @@ BBox resultToBBox(Result *r) {
 BBox getBBoxForID(int16_t id) {
   Result *r = huskylens.getCachedResultByID(ALGORITHM_OBJECT_RECOGNITION, id);
   return resultToBBox(r);
-}
-
-// Returns the horizontal overlap ratio of box A within box B.
-float horizontalOverlap(BBox a, BBox b) {
-  int16_t aLeft  = a.x - a.w / 2;
-  int16_t aRight = a.x + a.w / 2;
-  int16_t bLeft  = b.x - b.w / 2;
-  int16_t bRight = b.x + b.w / 2;
-
-  int16_t overlapLeft  = max(aLeft, bLeft);
-  int16_t overlapRight = min(aRight, bRight);
-  int16_t overlapWidth = overlapRight - overlapLeft;
-
-  if (overlapWidth <= 0 || a.w <= 0) return 0.0;
-  return (float)overlapWidth / (float)a.w;
-}
-
-// Check if the cat bbox is vertically positioned on/above the surface.
-bool isVerticallyOnSurface(BBox cat, BBox surface) {
-  int16_t catBottom  = cat.y + cat.h / 2;
-  int16_t surfaceTop = surface.y - surface.h / 2;
-  int16_t surfaceBot = surface.y + surface.h / 2;
-
-  return (catBottom >= surfaceTop && catBottom <= surfaceBot);
 }
 
 // Check if a person overlaps the counter surface (for exclusion).

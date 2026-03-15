@@ -5,7 +5,7 @@
  * WITHOUT needing an actual cat. Cycles through each subsystem:
  *
  *   1. Status LED — blinks in each pattern (idle, debounce, spray, error)
- *   2. Deterrent relay — fires a brief test pulse
+ *   2. Deterrent relay — fires a brief test pulse (push solenoid clicks)
  *   3. HUSKYLENS 2 — connects and reads one frame
  *
  * Open Serial Monitor at 9600 baud to see results.

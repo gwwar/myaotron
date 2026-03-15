@@ -163,7 +163,9 @@ bool isPersonAtCounter() {
   for (int16_t i = 0; i < numPersons; i++) {
     Result *r = huskylens.getCachedIndexResultByID(ALGORITHM_OBJECT_RECOGNITION, PERSON_ID, i);
     BBox personBox = resultToBBox(r);
-    if (personBox.valid && horizontalOverlap(personBox, surfaceBox) >= OVERLAP_THRESHOLD) {
+    if (personBox.valid
+        && horizontalOverlap(personBox, surfaceBox) >= OVERLAP_THRESHOLD
+        && isVerticallyOnSurface(personBox, surfaceBox)) {
       #if DEBUG_SERIAL
       Serial.println(F("Person detected at counter — suppressing deterrent."));
       #endif
@@ -335,12 +337,19 @@ void loop() {
           #endif
         }
       } else {
-        // Detection lost during debounce — reset
+        // Detection lost during debounce — reset, unless HUSKYLENS disconnected
         debounceCount = 0;
-        state = STATE_IDLE;
-        #if DEBUG_SERIAL
-        Serial.println(F("Debounce reset — detection lost."));
-        #endif
+        if (!huskyConnected) {
+          // Error state was set by detectCatOnCounter(); don't overwrite it
+          #if DEBUG_SERIAL
+          Serial.println(F("Debounce aborted — HUSKYLENS disconnected."));
+          #endif
+        } else {
+          state = STATE_IDLE;
+          #if DEBUG_SERIAL
+          Serial.println(F("Debounce reset — detection lost."));
+          #endif
+        }
       }
       break;
 

@@ -45,10 +45,12 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 | # | Part | Link | ~Price |
 |---|------|------|--------|
 | 6 | PetSafe SSSCat refill can (3.89 oz) | [Amazon](https://www.amazon.com/dp/B0721735K9) / [PetSafe](https://www.petsafe.net/ssscat) | $10 |
-| 7 | Push solenoid — 12V, 6N starting force, 10mm stroke | [Adafruit 413](https://www.adafruit.com/product/413) | $10 |
+| 7 | Push solenoid — 12V | [Adafruit 413](https://www.adafruit.com/product/413) | $10 |
 | 8 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
 | 9 | 12V 1A DC power supply (barrel jack) | [Adafruit 798](https://www.adafruit.com/product/798) | $9 |
 | 10 | DC barrel jack to screw terminal adapter | [Adafruit 368](https://www.adafruit.com/product/368) | $2 |
+
+> **What's a barrel jack adapter?** The 12V power supply has a round plug (barrel jack) on the end. This small adapter lets you plug it in and exposes **+** and **−** screw terminals so you can attach wires to it.
 | 11 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
 
 ### Misc
@@ -75,6 +77,14 @@ I2C (pronounced "eye-squared-see") is a communication protocol that uses just tw
 
 A relay is an electrically controlled switch. The Arduino sends a small signal (5V) to the relay, which then switches a larger circuit (12V) on or off. This lets the low-power Arduino control the higher-power solenoid.
 
+### What is a Solenoid?
+
+A solenoid is an electromagnet with a metal plunger inside. When you apply power, the plunger pushes out (or pulls in). When power is removed, a spring pushes it back. In this project, the solenoid's plunger pushes the SSSCat can's trigger button.
+
+### What is a Flyback Diode?
+
+When you turn off an electromagnet (like a solenoid or relay coil), the collapsing magnetic field creates a brief voltage spike that can damage other components. A flyback diode absorbs this spike safely. It's a small component with a stripe on one end (marking the direction). You'll clip or solder it across the solenoid's two wires — the README will tell you exactly how.
+
 ### Wiring Diagram
 
 ```
@@ -90,22 +100,35 @@ A relay is an electrically controlled switch. The Arduino sends a small signal (
                     │  GND      ─────────┼──── Relay GND
                     └─────────────────────┘
 
+    12V Power Supply Circuit:
+
     ┌───────────┐
     │   12V PSU │
     │  via      │
     │  barrel   │──── (+) ─────────► Relay COM terminal
-    │  jack     │──── (−) ─────┐
-    │  adapter  │              │
-    └───────────┘              │
-                               │
-    Relay NO terminal ─────────┼──► Solenoid wire 1
-                               │
-    Solenoid wire 2 ◄──────────┘
+    │  jack     │                           │
+    │  adapter  │                    (relay switches this circuit)
+    └───────────┘                           │
+                                     Relay NO terminal
+                                            │
+                                     Solenoid wire 1
+                                            │
+                                      [ SOLENOID ]
+                                            │
+                                     Solenoid wire 2
+                                            │
+    ┌───────────┐                           │
+    │   12V PSU │──── (−) ◄────────────────┘
+    │  adapter  │
+    └───────────┘
 
-    ⚡ FLYBACK DIODE: Solder or clip a 1N4007 diode across the
-    solenoid's two wires with the stripe (cathode) facing the
-    positive (+) side. This protects the relay from voltage spikes.
+    ⚡ FLYBACK DIODE: Clip or solder a 1N4007 diode across the
+    solenoid's two wires (wire 1 and wire 2). The silver stripe
+    on the diode (cathode) must face toward wire 1 (the side
+    connected to the relay). See "What is a Flyback Diode?" above.
 ```
+
+> **Note about wire colors:** The colors listed above (blue, yellow, black, red) are for the DFRobot Gravity I2C cable included with the HUSKYLENS 2. If you use a different I2C cable, check its documentation for the correct SDA/SCL/GND/VCC wires.
 
 ### Step-by-Step
 
@@ -124,13 +147,14 @@ A relay is an electrically controlled switch. The Arduino sends a small signal (
    - **GND** → Arduino **GND**
 
 3. **Connect the 12V power supply:**
-   - Plug the 12V barrel jack adapter into the power supply.
-   - Connect the **+** screw terminal to the relay's **COM** (common) terminal.
+   - Plug the power supply's round barrel plug into the barrel jack adapter.
+   - You now have **+** and **−** screw terminals exposed on the adapter.
+   - Connect the **+** screw terminal to the relay's **COM** (common) terminal using a jumper wire.
 
 4. **Connect the push solenoid:**
    - Connect one solenoid wire to the relay's **NO** (normally open) terminal.
    - Connect the other solenoid wire to the **−** screw terminal of the barrel jack adapter.
-   - **Add the flyback diode:** Clip or solder a 1N4007 diode directly across the solenoid's two wires. The **silver stripe on the diode** (cathode) must face the **positive (+)** side (the wire going to the relay). This protects the relay from damage when the solenoid turns off.
+   - **Add the flyback diode** (see "What is a Flyback Diode?" above): Clip or solder a 1N4007 diode directly across the solenoid's two wires. The **silver stripe on the diode** (cathode) must face the wire that goes to the relay (wire 1). This protects the relay from voltage spikes when the solenoid turns off.
 
 5. **Power the Arduino:**
    - Connect the Arduino to your computer (or a USB power adapter) with the USB-B cable.
@@ -161,11 +185,27 @@ Download and install [Arduino IDE](https://www.arduino.cc/en/software) (version 
 2. In Arduino IDE: **Sketch → Include Library → Add .ZIP Library**
 3. Select the downloaded ZIP file
 
-### 3. Train HUSKYLENS 2
+### 3. Test Your Wiring (Hardware Test)
 
-Before uploading the sketch, teach HUSKYLENS 2 to recognize your cat and counter:
+Before training the camera or uploading the main sketch, verify that your wiring is correct:
 
-1. Power on HUSKYLENS 2 and select **Object Recognition** using the function button
+1. Open `test_hardware/test_hardware.ino` in Arduino IDE
+2. Select your board: **Tools → Board → Arduino Uno** (or your board)
+3. Select port: **Tools → Port** → pick the one that appeared when you plugged in the Arduino
+4. Click **Upload** (→ arrow button)
+5. Open **Serial Monitor** (magnifying glass icon, top right) — set baud to **9600**
+6. The sketch tests each subsystem:
+   - **LED test** — blinks in each status pattern (idle, debounce, spray, error)
+   - **Relay test** — fires two brief pulses (you should hear clicks and see the solenoid extend)
+   - **HUSKYLENS test** — connects via I2C and reads a frame
+
+Each test reports **PASS** or **FAIL**. Fix any failures before continuing.
+
+### 4. Train HUSKYLENS 2
+
+With the HUSKYLENS 2 powered on via USB-C (from the wiring step), teach it to recognize your cat and counter:
+
+1. On the HUSKYLENS 2 screen, select **Object Recognition** using the function button
 2. Point the camera at your **cat** and press **Learn button** to learn it as **ID 1**
 3. Point the camera at your **counter/table surface** and press **Learn button** to learn it as **ID 2**
 4. (Optional) Point at a **person** and press **Learn button** to learn as **ID 3** (enables human exclusion — the system won't spray when you're at the counter)
@@ -173,7 +213,7 @@ Before uploading the sketch, teach HUSKYLENS 2 to recognize your cat and counter
 
 > **Tips:** Train in the same lighting conditions the camera will operate in. Train from multiple angles for better recognition. You can re-train anytime.
 
-### 4. Configure
+### 5. Configure
 
 Edit `myaotron/config.h` to adjust settings. The defaults work well for most setups:
 
@@ -198,28 +238,12 @@ Edit `myaotron/config.h` to adjust settings. The defaults work well for most set
 | `WATCHDOG_TIMEOUT_S` | `10` | Watchdog timeout, ESP32 only (seconds) |
 | `RECONNECT_INTERVAL_MS` | `3000` | Retry interval for HUSKYLENS reconnection (ms) |
 
-### 5. Upload and Test
+### 6. Upload the Main Sketch
 
 1. Open `myaotron/myaotron.ino` in Arduino IDE
-2. Select your board: **Tools → Board → Arduino Uno** (or your board)
-3. Select port: **Tools → Port** → pick the one that appeared when you plugged in the Arduino
-4. Click **Upload** (→ arrow button)
-5. Open **Serial Monitor** (magnifying glass icon, top right) — set baud to **9600**
-6. You should see: `myaotron starting...` then `Ready — watching for cats on counter...`
-
-### Running the Hardware Test
-
-Before deploying, test each component individually:
-
-1. Open `test_hardware/test_hardware.ino` in Arduino IDE
-2. Upload it to the Arduino
-3. Open Serial Monitor (9600 baud)
-4. The sketch tests each subsystem:
-   - **LED test** — blinks in each status pattern (idle, debounce, spray, error)
-   - **Relay test** — fires two brief pulses (you should hear clicks and see the solenoid extend)
-   - **HUSKYLENS test** — connects via I2C and reads a frame
-
-Each test reports **PASS** or **FAIL**.
+2. Click **Upload** (→ arrow button)
+3. Open **Serial Monitor** (9600 baud)
+4. You should see: `myaotron starting...` then `Ready — watching for cats on counter...`
 
 ## Camera Placement Tips
 
@@ -295,7 +319,7 @@ Runs 19 tests covering bounding box overlap, vertical positioning, confidence ch
 
 ### Hardware Integration Test
 
-Upload `test_hardware/test_hardware.ino` to verify wiring without needing an actual cat — see [Running the Hardware Test](#running-the-hardware-test) above.
+Upload `test_hardware/test_hardware.ino` to verify wiring without needing an actual cat — see [Step 3: Test Your Wiring](#3-test-your-wiring-hardware-test) above.
 
 ## Troubleshooting
 

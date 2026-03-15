@@ -45,8 +45,8 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 | # | Part | Link | ~Price |
 |---|------|------|--------|
 | 6 | PetSafe SSSCat refill can (3.89 oz) | [Amazon](https://www.amazon.com/dp/B0721735K9) / [PetSafe](https://www.petsafe.net/ssscat) | $10 |
-| 7 | Push solenoid — 12V, 5N | [Adafruit 412](https://www.adafruit.com/product/412) | $8 |
-| 8 | 1-channel relay module (5V logic, 10A) | [Adafruit 3191](https://www.adafruit.com/product/3191) | $10 |
+| 7 | Push solenoid — 12V, 6N starting force, 10mm stroke | [Adafruit 413](https://www.adafruit.com/product/413) | $10 |
+| 8 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
 | 9 | 12V 1A DC power supply (barrel jack) | [Adafruit 798](https://www.adafruit.com/product/798) | $9 |
 | 10 | DC barrel jack to screw terminal adapter | [Adafruit 368](https://www.adafruit.com/product/368) | $2 |
 | 11 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
@@ -143,9 +143,9 @@ The push solenoid needs to be aligned so its plunger presses the SSSCat can's tr
 
 - **3D-printed bracket** — most precise (search Thingiverse for "aerosol solenoid mount" or design your own)
 - **Wood block + zip-ties** — clamp the can and solenoid to an L-bracket or wood block so they're aligned
-- **Simple test setup** — lay the can on its side in a V-groove (two books), position the solenoid by hand, tape in place
+- **Simple test setup** — stand the can upright, position the solenoid by hand against the trigger, and tape in place temporarily
 
-The solenoid has 5.5mm of stroke and the aerosol trigger needs about 1–2mm of travel. Leave a small gap (~3mm) between the solenoid plunger and the trigger so it's not pressing when de-energized.
+The solenoid has 10mm of stroke and the aerosol trigger needs about 1–2mm of travel. Leave a small gap (~3mm) between the solenoid plunger and the trigger so it's not pressing when de-energized. The solenoid provides 6N starting force at full extension, increasing as the plunger retracts — by the time it contacts the trigger after a 3mm gap, force is roughly 8–10N.
 
 > **Important:** Always mount the SSSCat can **upright** (nozzle pointing horizontally or slightly downward). Never mount it upside down — liquid propellant could escape and cause frostbite.
 
@@ -187,7 +187,9 @@ Edit `myaotron/config.h` to adjust settings. The defaults work well for most set
 | `DETERRENT_PIN` | `7` | Arduino pin connected to relay signal |
 | `DETERRENT_ACTIVE_LOW` | `0` | Set to `1` for active-low relay modules |
 | `SPRAY_DURATION_MS` | `500` | How long the solenoid pushes the trigger (ms) |
-| `SPRAY_COOLDOWN_MS` | `5000` | Minimum time between sprays (ms) |
+| `SPRAY_COOLDOWN_MS` | `5000` | Minimum time between sprays (ms). Keep ≥2000 to avoid solenoid overheating |
+| `MAX_SPRAYS_PER_HOUR` | `20` | Safety limit — pauses spraying if exceeded. `0` to disable |
+| `CAN_CAPACITY_SPRAYS` | `120` | Approximate sprays per SSSCat can. Prints serial warning near depletion |
 | `STATUS_LED_PIN` | `LED_BUILTIN` | LED for visual status (`-1` to disable) |
 | `DEBUG_SERIAL` | `1` | Print detection info to Serial Monitor |
 | `SERIAL_BAUD` | `9600` | Serial Monitor baud rate |
@@ -309,7 +311,9 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 | Counter not detected | Lower the Detection Threshold in HUSKYLENS 2 settings. Re-learn the surface |
 | LED blinking fast | HUSKYLENS 2 disconnected — check I2C wiring and USB-C power |
 | Relay clicks but solenoid doesn't fire | Check if your relay is active-low; set `DETERRENT_ACTIVE_LOW` to `1` |
-| SSSCat can runs out fast | Increase `SPRAY_COOLDOWN_MS` to reduce spray frequency. Each can has ~120 sprays |
+| SSSCat can runs out fast | Increase `SPRAY_COOLDOWN_MS` or lower `MAX_SPRAYS_PER_HOUR`. Each can has ~120 sprays |
+| "Rate limit reached" message | Too many sprays in one hour — check for false positives. Resets automatically after 1 hour |
+| "Can depleted" message | Replace the SSSCat refill can and reset the Arduino to zero the spray counter |
 
 ## Safety Notes
 
@@ -318,6 +322,7 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 - **The flyback diode is required** — without it, the relay contacts will arc and degrade when the solenoid turns off
 - **Keep 12V away from Arduino** — only the solenoid circuit uses 12V; the Arduino runs on 5V via USB
 - **Supervise initial runs** — watch the first few activations to confirm the spray is gentle and aimed correctly
+- **Test solenoid alignment carefully** — the solenoid must press the trigger with enough force to actuate the can. Adjust the gap (~3mm) if the can doesn't spray
 
 ## License
 

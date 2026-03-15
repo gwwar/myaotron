@@ -57,7 +57,19 @@
 
 // Cooldown in milliseconds between consecutive sprays to avoid
 // overwhelming the cat (and your solenoid).
+// WARNING: Setting this below 2000ms risks solenoid overheating.
+// The push solenoid is rated for intermittent duty only.
 #define SPRAY_COOLDOWN_MS 5000
+
+// ─── Safety Limits ───────────────────────────────────────────────
+// Maximum sprays allowed per hour. If exceeded, the system pauses
+// spraying until the hour window resets. Prevents runaway spraying
+// from persistent false positives. Set to 0 to disable.
+#define MAX_SPRAYS_PER_HOUR 20
+
+// Approximate number of sprays in a full SSSCat can (~120).
+// A serial warning is printed as the can nears depletion.
+#define CAN_CAPACITY_SPRAYS 120
 
 // ─── Status LED ──────────────────────────────────────────────────
 // Optional LED for visual status feedback when serial is unavailable.

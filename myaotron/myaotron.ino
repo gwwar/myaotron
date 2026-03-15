@@ -78,6 +78,11 @@ unsigned long lastReconnectAttempt = 0;
 bool huskyConnected = false;
 uint16_t sprayCount = 0;
 
+// Hourly rate limiting
+uint16_t spraysThisHour = 0;
+unsigned long hourWindowStart = 0;
+bool rateLimited = false;
+
 // LED blink tracking
 unsigned long lastLedToggle = 0;
 bool ledState = false;
@@ -89,6 +94,52 @@ void setDeterrent(bool active) {
   digitalWrite(DETERRENT_PIN, active ? LOW : HIGH);
 #else
   digitalWrite(DETERRENT_PIN, active ? HIGH : LOW);
+#endif
+}
+
+// Check and update hourly spray rate limit.
+// Returns true if spraying is allowed.
+bool checkRateLimit() {
+#if MAX_SPRAYS_PER_HOUR > 0
+  unsigned long now = millis();
+  // Reset window every hour (3600000ms)
+  if (now - hourWindowStart >= 3600000UL) {
+    hourWindowStart = now;
+    spraysThisHour = 0;
+    if (rateLimited) {
+      rateLimited = false;
+      #if DEBUG_SERIAL
+      Serial.println(F("Rate limit reset — spraying re-enabled."));
+      #endif
+    }
+  }
+  if (spraysThisHour >= MAX_SPRAYS_PER_HOUR) {
+    if (!rateLimited) {
+      rateLimited = true;
+      #if DEBUG_SERIAL
+      Serial.print(F("⚠ Rate limit reached ("));
+      Serial.print(MAX_SPRAYS_PER_HOUR);
+      Serial.println(F(" sprays/hour). Pausing deterrent."));
+      #endif
+    }
+    return false;
+  }
+#endif
+  return true;
+}
+
+// Print can depletion warnings at key thresholds.
+void checkCanDepletion() {
+#if CAN_CAPACITY_SPRAYS > 0
+  #if DEBUG_SERIAL
+  if (sprayCount == (uint16_t)(CAN_CAPACITY_SPRAYS * 3 / 4)) {
+    Serial.println(F("⚠ SSSCat can ~75% depleted. Consider replacing soon."));
+  } else if (sprayCount == (uint16_t)(CAN_CAPACITY_SPRAYS * 9 / 10)) {
+    Serial.println(F("⚠ SSSCat can ~90% depleted. Replace soon!"));
+  } else if (sprayCount >= CAN_CAPACITY_SPRAYS) {
+    Serial.println(F("⚠ SSSCat can likely empty. Replace can and reset Arduino."));
+  }
+  #endif
 #endif
 }
 
@@ -339,10 +390,13 @@ void loop() {
         debounceCount = 1;
         if (DEBOUNCE_FRAMES <= 1) {
           // No debounce needed
+          if (!checkRateLimit()) break;
           state = STATE_SPRAYING;
           sprayStartTime = now;
           setDeterrent(true);
           sprayCount++;
+          spraysThisHour++;
+          checkCanDepletion();
           #if DEBUG_SERIAL
           Serial.print(F(">>> SPRAY #")); Serial.print(sprayCount);
           Serial.println(F(" ACTIVATED <<<"));
@@ -368,10 +422,17 @@ void loop() {
         Serial.println(DEBOUNCE_FRAMES);
         #endif
         if (debounceCount >= DEBOUNCE_FRAMES) {
+          if (!checkRateLimit()) {
+            state = STATE_IDLE;
+            debounceCount = 0;
+            break;
+          }
           state = STATE_SPRAYING;
           sprayStartTime = now;
           setDeterrent(true);
           sprayCount++;
+          spraysThisHour++;
+          checkCanDepletion();
           #if DEBUG_SERIAL
           Serial.print(F(">>> SPRAY #")); Serial.print(sprayCount);
           Serial.println(F(" ACTIVATED <<<"));

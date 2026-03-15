@@ -59,7 +59,7 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 | 13 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
 | 14 | Mounting bracket for solenoid + can | 3D print, wood block, or zip-ties + L-bracket | $0–5 |
 
-**Estimated total: ~$130** (plus the Arduino if you don't have one)
+**Estimated total: ~$128** (plus the Arduino if you don't have one)
 
 > **Why PetSafe SSSCat?** Regular keyboard duster cans contain difluoroethane — a propellant that is **toxic to cats** (causes CNS depression and cardiac arrhythmia). SSSCat refills are specifically formulated and tested for safe use around pets.
 
@@ -323,6 +323,7 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 - **Keep 12V away from Arduino** — only the solenoid circuit uses 12V; the Arduino runs on 5V via USB
 - **Supervise initial runs** — watch the first few activations to confirm the spray is gentle and aimed correctly
 - **Test solenoid alignment carefully** — the solenoid must press the trigger with enough force to actuate the can. Adjust the gap (~3mm) if the can doesn't spray
+- **Cats with severe asthma** — SSSCat is safe for most cats, but if your cat has a respiratory condition, consult your vet before using any air-spray deterrent
 
 ## License
 

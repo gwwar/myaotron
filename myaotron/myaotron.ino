@@ -117,7 +117,7 @@ bool checkRateLimit() {
     if (!rateLimited) {
       rateLimited = true;
       #if DEBUG_SERIAL
-      Serial.print(F("⚠ Rate limit reached ("));
+      Serial.print(F("WARNING: Rate limit reached ("));
       Serial.print(MAX_SPRAYS_PER_HOUR);
       Serial.println(F(" sprays/hour). Pausing deterrent."));
       #endif
@@ -133,11 +133,11 @@ void checkCanDepletion() {
 #if CAN_CAPACITY_SPRAYS > 0
   #if DEBUG_SERIAL
   if (sprayCount == (uint16_t)(CAN_CAPACITY_SPRAYS * 3 / 4)) {
-    Serial.println(F("⚠ SSSCat can ~75% depleted. Consider replacing soon."));
+    Serial.println(F("WARNING: SSSCat can ~75% depleted. Consider replacing soon."));
   } else if (sprayCount == (uint16_t)(CAN_CAPACITY_SPRAYS * 9 / 10)) {
-    Serial.println(F("⚠ SSSCat can ~90% depleted. Replace soon!"));
+    Serial.println(F("WARNING: SSSCat can ~90% depleted. Replace soon!"));
   } else if (sprayCount >= CAN_CAPACITY_SPRAYS) {
-    Serial.println(F("⚠ SSSCat can likely empty. Replace can and reset Arduino."));
+    Serial.println(F("WARNING: SSSCat can likely empty. Replace can and reset Arduino."));
   }
   #endif
 #endif

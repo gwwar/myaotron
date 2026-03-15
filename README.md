@@ -37,11 +37,11 @@ Below is everything you need, with links to trusted stores. The "core" items are
 | # | Item | Where to Buy | ~Price |
 |---|------|-------------|--------|
 | 9 | **12V normally-closed solenoid valve** (1/4" NPT, direct-acting, rated for air) — releases air when activated. Get a **pneumatic** valve, not a water valve. | [U.S. Solid (pneumatic)](https://ussolid.com/products/u-s-solid-1-4-npt-pneumatic-electric-solenoid-valve-12-v-dc-2-way-2-position-normally-closed-html) · [Amazon (search "12V pneumatic solenoid valve 1/4 direct acting")](https://www.amazon.com/s?k=12V+pneumatic+solenoid+valve+1%2F4+direct+acting) | $10–18 |
-| 10 | **12V diaphragm air pump** — fills the reservoir with pressurized air | [Adafruit (PID 4700)](https://www.adafruit.com/product/4700) · [SparkFun](https://www.sparkfun.com/vacuum-pump-12v.html) · [Amazon](https://www.amazon.com/s?k=12V+diaphragm+air+pump) | $5–15 |
+| 10 | **12V mini diaphragm air pump** — fills the reservoir with pressurized air. Must be 12V to share the power supply. | [SparkFun](https://www.sparkfun.com/vacuum-pump-12v.html) · [Amazon (search "12V mini diaphragm air pump")](https://www.amazon.com/s?k=12V+mini+diaphragm+air+pump) | $10–15 |
 | 11 | **Air reservoir** (~0.5L) — holds pressurized air between sprays. A small sealed PVC pipe cap, plastic bottle with fittings, or a [small pneumatic tank](https://www.amazon.com/s?k=small+air+reservoir+tank+pneumatic) works | Hardware store / Amazon | $5–10 |
 | 12 | **One-way check valve** (1/4") — prevents air from flowing backward out of the reservoir | [Amazon (search "1/4 inline check valve air")](https://www.amazon.com/s?k=1%2F4+inline+check+valve+air) | $3–5 |
 | 13 | **Adjustable pressure relief valve** (≤10 PSI) — **critical safety part** that prevents over-pressurization | [Amazon (search "adjustable pressure relief valve 10 PSI")](https://www.amazon.com/s?k=adjustable+pressure+relief+valve+10+psi) | $5–10 |
-| 14 | **1/4" silicone or polyurethane tubing** (~3 ft) — connects all the pneumatic components | [Adafruit](https://www.adafruit.com/product/4661) · [Amazon](https://www.amazon.com/s?k=1%2F4+silicone+tubing) | $3–5 |
+| 14 | **1/4" ID silicone or polyurethane tubing** (~3 ft) — connects all the pneumatic components. Make sure the inner diameter matches your fittings (1/4" ID = ~6mm). | [Amazon (search "1/4 ID silicone tubing")](https://www.amazon.com/s?k=1%2F4+ID+silicone+tubing) | $5–8 |
 | 15 | **Hose barb fittings + hose clamps** — secure the tubing to each component | Hardware store / Amazon | $5 |
 | 16 | **Wide-bore nozzle or aquarium air stone** — diffuses the air into a gentle puff (not a focused jet) | [Amazon (search "aquarium air stone")](https://www.amazon.com/s?k=aquarium+air+stone) | $2–5 |
 
@@ -49,12 +49,14 @@ Below is everything you need, with links to trusted stores. The "core" items are
 
 | # | Item | Where to Buy | ~Price |
 |---|------|-------------|--------|
-| 17 | **12V DC power supply** (at least 2A) — powers the solenoid and pump | [Adafruit (PID 798)](https://www.adafruit.com/product/798) · [Amazon](https://www.amazon.com/s?k=12V+2A+DC+power+supply+barrel) | $8–12 |
+| 17 | **12V DC power supply** (at least 2A) — powers the solenoid and pump. A 1A supply is NOT enough; the solenoid (~400mA) and pump (~1A) run simultaneously. | [Amazon (search "12V 2A DC power supply barrel jack")](https://www.amazon.com/s?k=12V+2A+DC+power+supply+barrel+jack+UL) | $8–12 |
 | 18 | **DC barrel jack to screw terminal adapter** — makes it easy to connect the 12V supply to wires without soldering | [Adafruit (PID 368)](https://www.adafruit.com/product/368) · [Amazon](https://www.amazon.com/s?k=DC+barrel+jack+screw+terminal) | $3 |
 
-**Estimated total: $85–130** (depending on what you already have).
+**Estimated total: $90–140** (depending on what you already have).
 
 > **Tip for beginners:** If you want to test the electronics before building the pneumatic system, you can start with just items 1–8. The relay will click audibly when a cat is detected, confirming everything works before you add air.
+
+> **How big is it?** The electronics (Arduino + shield + relay) fit in a box about the size of a deck of cards. The pneumatic parts (pump, reservoir, solenoid, valves) add roughly the volume of a small water bottle. The whole system can sit behind the counter backsplash, on a shelf, or in a small project enclosure beside the counter — only the camera and nozzle need to face the counter surface.
 
 ## Wiring — Step by Step
 

@@ -36,7 +36,7 @@ Below is everything you need, with links to trusted stores. The "core" items are
 
 | # | Item | Where to Buy | ~Price |
 |---|------|-------------|--------|
-| 9 | **12V normally-closed solenoid valve** (1/4" NPT or hose barb) — releases air when activated | [Adafruit (plastic, PID 997)](https://www.adafruit.com/product/997) · [Amazon (search "12V solenoid valve 1/4")](https://www.amazon.com/s?k=12V+solenoid+valve+1%2F4) | $8–12 |
+| 9 | **12V normally-closed solenoid valve** (1/4" NPT, direct-acting, rated for air) — releases air when activated. Get a **pneumatic** valve, not a water valve. | [U.S. Solid (pneumatic)](https://ussolid.com/products/u-s-solid-1-4-npt-pneumatic-electric-solenoid-valve-12-v-dc-2-way-2-position-normally-closed-html) · [Amazon (search "12V pneumatic solenoid valve 1/4 direct acting")](https://www.amazon.com/s?k=12V+pneumatic+solenoid+valve+1%2F4+direct+acting) | $10–18 |
 | 10 | **12V diaphragm air pump** — fills the reservoir with pressurized air | [Adafruit (PID 4700)](https://www.adafruit.com/product/4700) · [SparkFun](https://www.sparkfun.com/vacuum-pump-12v.html) · [Amazon](https://www.amazon.com/s?k=12V+diaphragm+air+pump) | $5–15 |
 | 11 | **Air reservoir** (~0.5L) — holds pressurized air between sprays. A small sealed PVC pipe cap, plastic bottle with fittings, or a [small pneumatic tank](https://www.amazon.com/s?k=small+air+reservoir+tank+pneumatic) works | Hardware store / Amazon | $5–10 |
 | 12 | **One-way check valve** (1/4") — prevents air from flowing backward out of the reservoir | [Amazon (search "1/4 inline check valve air")](https://www.amazon.com/s?k=1%2F4+inline+check+valve+air) | $3–5 |

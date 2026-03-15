@@ -102,8 +102,10 @@ void setDeterrent(bool active) {
 bool checkRateLimit() {
 #if MAX_SPRAYS_PER_HOUR > 0
   unsigned long now = millis();
-  // Reset window every hour (3600000ms)
-  if (now - hourWindowStart >= 3600000UL) {
+  // Start the window on first spray, reset every hour after that
+  if (spraysThisHour == 0) {
+    hourWindowStart = now;
+  } else if (now - hourWindowStart >= 3600000UL) {
     hourWindowStart = now;
     spraysThisHour = 0;
     if (rateLimited) {

@@ -2,7 +2,8 @@
  * myaotron — Cat-on-counter detection and deterrent system
  *
  * Uses HUSKYLENS 2 (SEN0638) Object Recognition to detect cats on
- * counters and trigger a spray deterrent (air puff or water).
+ * counters and trigger a push solenoid that presses a compressed air
+ * can (PetSafe SSSCat refill) to deliver a harmless puff of air.
  *
  * Detection modes (set in config.h):
  *   MODE_DUAL_OVERLAP: triggers when a "cat" bbox overlaps a "dining
@@ -13,7 +14,7 @@
  * Hardware:
  *   - Arduino Uno/Mega or ESP32
  *   - HUSKYLENS 2 (I2C connection)
- *   - Relay/MOSFET on DETERRENT_PIN → solenoid valve or air pump
+ *   - Relay/MOSFET on DETERRENT_PIN → push solenoid pressing air can trigger
  *
  * Setup:
  *   1. On HUSKYLENS 2, enter Object Recognition mode.

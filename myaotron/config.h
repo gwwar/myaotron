@@ -44,8 +44,8 @@
 #define PERSON_EXCLUSION_ENABLED 1
 
 // ─── Deterrent Output ────────────────────────────────────────────
-// Digital pin connected to relay/MOSFET controlling the solenoid
-// valve or air pump.
+// Digital pin connected to relay/MOSFET controlling the push
+// solenoid that presses the compressed air can trigger.
 #define DETERRENT_PIN 7
 
 // Set to 1 if your relay module is active-LOW (common with

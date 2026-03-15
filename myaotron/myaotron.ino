@@ -353,7 +353,11 @@ void setup() {
 #if PUMP_MODE == PUMP_MODE_ON_DEMAND
   Serial.println(F("Pre-charging reservoir..."));
   setPump(true);
-  delay(PUMP_PRE_CHARGE_MS);
+  // Feed watchdog during pre-charge to avoid reset on long fills
+  for (unsigned long elapsed = 0; elapsed < PUMP_PRE_CHARGE_MS; elapsed += 500) {
+    delay(500);
+    watchdogReset();
+  }
   setPump(false);
   Serial.println(F("Pre-charge complete."));
 #elif PUMP_MODE == PUMP_MODE_CONTINUOUS

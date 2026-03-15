@@ -91,6 +91,11 @@
 // reservoir (on-demand mode only).
 #define PUMP_REFILL_MS 2000
 
+// ─── Compile-time safety checks ─────────────────────────────────
+#if PUMP_MODE != PUMP_MODE_NONE && DETERRENT_PIN == PUMP_PIN
+  #error "DETERRENT_PIN and PUMP_PIN must not be the same pin"
+#endif
+
 // ─── Status LED ──────────────────────────────────────────────────
 // Optional LED for visual status feedback when serial is unavailable.
 // Set to -1 to disable. Use LED_BUILTIN for the onboard LED.

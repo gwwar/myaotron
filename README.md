@@ -2,7 +2,7 @@
 
 Cat-on-counter detection and deterrent system powered by [HUSKYLENS 2](https://wiki.dfrobot.com/sen0638/docs/22636/) AI camera.
 
-Detects when your cat jumps on the kitchen counter and gives them a harmless puff of air to discourage the behavior — automatically and humanely. Hacks a [PetSafe SSSCat](https://www.petsafe.net/ssscat) spray device, replacing its basic motion sensor with AI-powered cat detection.
+Detects when your cat jumps on the kitchen counter and gives them a harmless puff of air to discourage the behavior — automatically and humanely. Hacks a [PetSafe SSSCat](https://www.petsafe.com/p/ssscat-automatic-spray-pet-deterrent/PPD00-18209/) spray device, replacing its basic motion sensor with AI-powered cat detection.
 
 ## How It Works
 
@@ -28,7 +28,7 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 
 | # | Part | Link | ~Price |
 |---|------|------|--------|
-| 1 | HUSKYLENS 2 (SEN0638) — AI camera | [DFRobot](https://www.dfrobot.com/product-2828.html) | $50 |
+| 1 | HUSKYLENS 2 (SEN0638) — AI camera | [DFRobot](https://www.dfrobot.com/product-2995.html) | $75 |
 | 2 | Arduino Uno R3 (or compatible) | [DFRobot](https://www.dfrobot.com/product-838.html) / [Adafruit](https://www.adafruit.com/product/50) | $25 |
 | 3 | Gravity I2C cable (4-pin) | Included with HUSKYLENS 2 | — |
 | 4 | USB-C cable (for HUSKYLENS 2 power) | Any USB-C cable | $5 |
@@ -38,20 +38,20 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 
 | # | Part | Link | ~Price |
 |---|------|------|--------|
-| 6 | PetSafe SSSCat **complete device** (includes one refill can) | [Amazon](https://www.amazon.com/dp/B000RIA95G) / [PetSafe](https://www.petsafe.net/ssscat) | $25 |
+| 6 | PetSafe SSSCat **complete device** (includes one refill can) | [Amazon](https://www.amazon.com/dp/B0CMVY47MR) / [PetSafe](https://www.petsafe.com/p/ssscat-automatic-spray-pet-deterrent/PPD00-18209/) | $60 |
 | 7 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
 | 8 | 4× AAA batteries | Any brand (for the SSSCat's built-in battery compartment) | $3 |
-| 9 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
+| 9 | 1N4001 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
 
 ### Misc
 
 | # | Part | Link | ~Price |
 |---|------|------|--------|
-| 10 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
+| 10 | Jumper wires (M-M) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $2 |
 | 11 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
 | 12 | Wire nuts or small lever connectors (2-pack) | Hardware store electrical aisle | $2 |
 
-**Estimated total: ~$100** (plus the Arduino if you don't have one)
+**Estimated total: ~$160** (plus the Arduino if you don't have one)
 
 > **Why PetSafe SSSCat?** Regular keyboard duster cans contain difluoroethane — a propellant that is **toxic to cats** (causes CNS depression and cardiac arrhythmia). SSSCat refills are specifically formulated and tested for safe use around pets.
 

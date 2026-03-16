@@ -49,9 +49,9 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 | 8 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
 | 9 | 12V 1A DC power supply (barrel jack) | [Adafruit 798](https://www.adafruit.com/product/798) | $9 |
 | 10 | DC barrel jack to screw terminal adapter | [Adafruit 368](https://www.adafruit.com/product/368) | $2 |
+| 11 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
 
 > **What's a barrel jack adapter?** The 12V power supply has a round plug (barrel jack) on the end. This small adapter lets you plug it in and exposes **+** and **−** screw terminals so you can attach wires to it.
-| 11 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
 
 ### Misc
 
@@ -83,7 +83,7 @@ A solenoid is an electromagnet with a metal plunger inside. When you apply power
 
 ### What is a Flyback Diode?
 
-When you turn off an electromagnet (like a solenoid or relay coil), the collapsing magnetic field creates a brief voltage spike that can damage other components. A flyback diode absorbs this spike safely. It's a small component with a stripe on one end (marking the direction). You'll clip or solder it across the solenoid's two wires — the README will tell you exactly how.
+When you turn off an electromagnet (like a solenoid or relay coil), the collapsing magnetic field creates a brief voltage spike that can damage other components. A flyback diode absorbs this spike safely. It's a small component with a stripe on one end (marking the direction). You'll clip or solder it across the solenoid's two wires — see the [wiring steps](#step-by-step) below for exactly how.
 
 ### Wiring Diagram
 
@@ -130,7 +130,7 @@ When you turn off an electromagnet (like a solenoid or relay coil), the collapsi
      - **Blue** (SDA) → Arduino pin **A4**
      - **Yellow** (SCL) → Arduino pin **A5**
      - **Black** (GND) → Arduino **GND**
-     - **Red** (VCC) → leave disconnected (HUSKYLENS 2 gets power from USB-C instead)
+     - **Red** (VCC) → leave disconnected (HUSKYLENS 2 gets power from USB-C instead). Tuck the bare end out of the way with a small piece of tape so it can't accidentally touch anything.
    - Plug a USB-C cable into the HUSKYLENS 2 and connect it to a USB power source (phone charger, USB hub, etc.).
 
 2. **Connect the relay module to Arduino:**
@@ -177,7 +177,7 @@ braces, so nothing depends on tricky screw techniques.
 | 2 | 1×2 lumber, ~14" long (you'll cut two pieces) | Post + arm | Hardware store lumber aisle — ask them to cut a 7.5" piece and a 5" piece |
 | 3 | 3× small corner braces (~1.5" × 1.5"), with screws | Joins wood pieces together strongly | Hardware store fastener/bracket aisle, usually sold in packs of 4 |
 | 4 | Hose clamp, 1.5"–2.5" range | Holds the can upright | Hardware store plumbing aisle |
-| 5 | 2× M3 × 25mm bolts + 2× M3 nuts + 2× M3 washers | Bolt solenoid to arm | Hardware store fastener aisle (metric drawer) |
+| 5 | 2× M3 × 25mm bolts + 2× M3 washers | Bolt solenoid to arm (threads into solenoid — no nuts needed) | Hardware store fastener aisle (metric drawer) |
 | 6 | Small thin rubber bumper pads (~1–2mm thick) | Plunger tip grip | Self-adhesive clear "furniture dots" from hardware store |
 | 7 | 4× rubber or felt furniture pads | Protect counter, add grip | Self-adhesive pads, usually near the bumpers |
 | 8 | 2–3 small zip-ties or cable clips | Secure the solenoid wires | Hardware store electrical aisle |
@@ -337,8 +337,8 @@ Each test reports **PASS** or **FAIL**. Fix any failures before continuing.
 
 With the HUSKYLENS 2 powered on via USB-C (from the wiring step), teach it to recognize your cat and counter:
 
-1. On the HUSKYLENS 2 screen, select **Object Recognition** using the function button
-2. Point the camera at your **cat** and press **Learn button** to learn it as **ID 1**
+1. On the HUSKYLENS 2 screen, select **Object Recognition** using the **function button** (the small button on the top edge of the device, next to the dial)
+2. Point the camera at your **cat** and press the **Learn button** (the large button on the top edge) to learn it as **ID 1**
 3. Point the camera at your **counter/table surface** and press **Learn button** to learn it as **ID 2**
 4. (Optional) Point at a **person** and press **Learn button** to learn as **ID 3** (enables human exclusion — the system won't spray when you're at the counter)
 5. (Optional) Go to Settings → Export Model to save your trained model
@@ -379,7 +379,7 @@ Edit `myaotron/config.h` to adjust settings. The defaults work well for most set
 
 ## Camera Placement Tips
 
-- Mount the camera 2–3 feet above the counter, angled down ~45°
+- Mount the camera 2–3 feet above the counter, angled down ~45°. A kitchen cabinet underside, a shelf, or a small clamp (like a spring clamp or phone mount) all work well. Adhesive command strips can hold the lightweight HUSKYLENS in place without drilling.
 - Make sure the entire counter surface is in frame
 - Avoid pointing at windows (bright backlight hurts detection)
 - Position the SSSCat can + mount so the nozzle points across the counter at cat-jump height

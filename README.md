@@ -59,7 +59,7 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 |---|------|------|--------|
 | 12 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
 | 13 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
-| 14 | Mounting bracket for solenoid + can | 3D print, wood block, or zip-ties + L-bracket | $0–5 |
+| 14 | Mounting bracket materials | Scrap wood (1×2 lumber), hose clamp, #6 wood screws, rubber bumper pad — see [Mounting](#mounting-the-solenoid-and-can) | $0–5 |
 
 **Estimated total: ~$128** (plus the Arduino if you don't have one)
 
@@ -155,15 +155,90 @@ When you turn off an electromagnet (like a solenoid or relay coil), the collapsi
 
 ### Mounting the Solenoid and Can
 
-The push solenoid needs to be aligned so its plunger presses the SSSCat can's trigger button. Options:
+The solenoid must push **straight down** onto the SSSCat can's valve stem.
+The can is ~6" tall and ~2" wide, so a simple wood bracket works well.
 
-- **3D-printed bracket** — most precise (search Thingiverse for "aerosol solenoid mount" or design your own)
-- **Wood block + zip-ties** — clamp the can and solenoid to an L-bracket or wood block so they're aligned
-- **Simple test setup** — stand the can upright, position the solenoid by hand against the trigger, and tape in place temporarily
+#### Mounting Materials
 
-The solenoid has 10mm of stroke and the aerosol trigger needs about 1–2mm of travel. Leave a small gap (~3mm) between the solenoid plunger and the trigger so it's not pressing when de-energized. The solenoid provides 6N starting force at full extension, increasing as the plunger retracts — by the time it contacts the trigger after a 3mm gap, force is roughly 8–10N.
+| Item | Purpose | Where to get it |
+|------|---------|-----------------|
+| Base board, ~8" × 5" | Stable platform | Scrap wood, cutting board, or thick acrylic |
+| Wood post, ~7" × 1.5" × 0.75" | Vertical support (taller than the can) | 1×2 lumber from any hardware store |
+| Wood arm, ~4" × 1.5" × 0.75" | Horizontal arm over the can | Same 1×2 lumber |
+| Hose clamp, 1.5"–2.5" range | Holds the can to the base board | Hardware store plumbing aisle |
+| 2× M3 bolts (8–10mm) + nuts | Bolt the solenoid to the arm | Hardware store fastener aisle |
+| Small rubber bumper pad | Glue to plunger tip for grip | Hardware store — self-adhesive door/furniture bumpers |
+| Wood screws, #6 × 1.5" (×4) | Assemble post, arm, and hose clamp | Hardware store |
 
-> **Important:** Always mount the SSSCat can **upright** (nozzle pointing horizontally or slightly downward). Never mount it upside down — liquid propellant could escape and cause frostbite.
+#### How to Build It
+
+```
+    Side view:
+
+    ┌──┬═══════════════┐ ◄── arm (~4" long)
+    │  │  ┌──────────┐ │
+    │  │  │ SOLENOID │ │ ◄── bolted underneath arm
+    │  │  │    ||    │ │
+    │  │  └────||────┘ │
+    │  │      (●)      │ ◄── rubber bumper on plunger tip
+    │  │    ~3mm gap   │
+    │  │  ┌──────────┐ │
+    │  │  │  SSSCat  │ │ ◄── held upright by hose clamp
+    │  │  │   can    │ │
+    │  │  │          │ │
+    │  │  └──────────┘ │
+    └──┘                 
+     ▲                   
+     post (~7")          
+                         
+    ════════════════════ base board
+```
+
+**Steps:**
+
+1. **Screw the post to the base board.** Stand the 7" post vertically at one end
+   of the board and drive two wood screws up through the bottom of the board
+   into the post. The post must be taller than the can (~6").
+
+2. **Attach the arm to the post.** Screw the 4" arm horizontally to the top of
+   the post, forming an upside-down "L". The arm should extend out over where
+   the can will sit.
+
+3. **Bolt the solenoid to the arm.** Drill two holes through the arm that line
+   up with the solenoid's M3 mounting holes (on the flat end of the solenoid
+   body). Bolt the solenoid to the **underside** of the arm so the plunger
+   points straight down.
+
+4. **Add a rubber bumper to the plunger tip.** Peel and stick a small rubber
+   bumper pad (the kind used on cabinet doors) onto the end of the plunger.
+   This prevents the metal plunger from slipping off the narrow valve stem
+   and cushions repeated impacts.
+
+5. **Clamp the can to the base board.** Stand the SSSCat refill can upright
+   under the solenoid. Wrap the hose clamp around the can and screw through
+   the base board (or use a zip-tie cinched to a screw in the board). The can
+   should not wobble or slide when the solenoid fires.
+
+6. **Adjust the gap.** With the solenoid unpowered, the rubber bumper on the
+   plunger tip should hover ~3mm above the can's valve stem. If it's too high
+   or too low, loosen the hose clamp and slide the can, or add a thin shim
+   (washer) between the solenoid and the arm. The solenoid has 10mm of stroke,
+   so after crossing the 3mm gap it still has plenty of travel to press the
+   valve (~1–2mm of valve travel needed).
+
+7. **Test.** Power the solenoid briefly (see Hardware Test below). You should
+   hear a click and feel a puff of air. If the can hisses but doesn't spray
+   well, the plunger may be off-center — loosen and re-align. If no spray at
+   all, reduce the gap.
+
+> **Important:** Always keep the SSSCat can **upright** (nozzle pointing
+> horizontally or slightly downward). Never mount it upside down — liquid
+> propellant could escape and cause frostbite.
+>
+> **Overstroke is OK.** The solenoid has more travel (10mm) than the valve
+> needs (1–2mm). This is fine — aerosol valves have internal mechanical stops,
+> and the solenoid's force (8–10N at contact) is within normal hand-press
+> range. The SSSCat's own built-in solenoid works the same way.
 
 ## Software Setup
 
@@ -242,7 +317,7 @@ Edit `myaotron/config.h` to adjust settings. The defaults work well for most set
 - Mount the camera 2–3 feet above the counter, angled down ~45°
 - Make sure the entire counter surface is in frame
 - Avoid pointing at windows (bright backlight hurts detection)
-- Position the SSSCat can so its nozzle points across the counter at cat-jump height
+- Position the SSSCat can + mount so the nozzle points across the counter at cat-jump height
 - Keep the can 1–3 feet from where cats typically land
 
 ## Detection Logic (MODE_DUAL_OVERLAP)
@@ -319,7 +394,7 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 |---------|----------|
 | "HUSKYLENS 2 not found" | Check I2C wiring (SDA→A4, SCL→A5). Ensure separate USB-C power to HUSKYLENS 2 |
 | Cat detected but no spray | Check relay wiring on D7. Verify 12V power to solenoid. Open Serial Monitor |
-| Solenoid clicks but can doesn't spray | Adjust solenoid alignment — plunger may not be reaching the trigger. Reduce the gap |
+| Solenoid clicks but can doesn't spray | Plunger not centered on valve — re-align the bracket. Or gap too large — reduce to ~2mm |
 | Solenoid doesn't click at all | Check 12V PSU and diode orientation (stripe toward +). Try swapping relay NO/NC |
 | Too many false positives | Increase `MIN_CONFIDENCE`, `OVERLAP_THRESHOLD`, or `DEBOUNCE_FRAMES` in config.h |
 | Sprays when cat is on floor | Make sure counter is learned as ID 2. Reposition camera angle |
@@ -338,7 +413,7 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 - **The flyback diode is required** — without it, the relay contacts will arc and degrade when the solenoid turns off
 - **Keep 12V away from Arduino** — only the solenoid circuit uses 12V; the Arduino runs on 5V via USB
 - **Supervise initial runs** — watch the first few activations to confirm the spray is gentle and aimed correctly
-- **Test solenoid alignment carefully** — the solenoid must press the trigger with enough force to actuate the can. Adjust the gap (~3mm) if the can doesn't spray
+- **Test solenoid alignment carefully** — the plunger must press straight down onto the valve stem. See [Mounting the Solenoid and Can](#mounting-the-solenoid-and-can) for gap and alignment details
 - **Cats with severe asthma** — SSSCat is safe for most cats, but if your cat has a respiratory condition, consult your vet before using any air-spray deterrent
 
 ## License

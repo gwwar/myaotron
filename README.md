@@ -91,38 +91,30 @@ When you turn off an electromagnet (like a solenoid or relay coil), the collapsi
                     ┌─────────────────────┐
                     │     Arduino Uno     │
                     │                     │
-                    │  A4 (SDA) ◄────────┼──── HUSKYLENS 2 SDA (blue wire)
-                    │  A5 (SCL) ◄────────┼──── HUSKYLENS 2 SCL (yellow wire)
-                    │  GND      ◄────────┼──── HUSKYLENS 2 GND (black wire)
+                    │  A4 (SDA) ◄─────────┼──── HUSKYLENS 2 SDA (blue wire)
+                    │  A5 (SCL) ◄─────────┼──── HUSKYLENS 2 SCL (yellow wire)
+                    │  GND      ◄─────────┼──── HUSKYLENS 2 GND (black wire)
                     │                     │
-                    │  D7       ─────────┼──── Relay IN (signal)
-                    │  5V       ─────────┼──── Relay VCC
-                    │  GND      ─────────┼──── Relay GND
+                    │  D7       ──────────┼──── Relay IN (signal)
+                    │  5V       ──────────┼──── Relay VCC
+                    │  GND      ──────────┼──── Relay GND
                     └─────────────────────┘
 
-    12V Power Supply Circuit:
+    12V Power Supply Circuit (via barrel jack adapter):
 
-    ┌───────────┐
-    │   12V PSU │
-    │  via      │
-    │  barrel   │──── (+) ─────────► Relay COM terminal
-    │  jack     │                           │
-    │  adapter  │                    (relay switches this circuit)
-    └───────────┘                           │
-                                     Relay NO terminal
-                                            │
-                                     Solenoid wire 1
-                                            │
-                                      [ SOLENOID ]
-                                            │
-                                     Solenoid wire 2
-                                            │
-    ┌───────────┐                           │
-    │   12V PSU │──── (−) ◄────────────────┘
-    │  adapter  │
-    └───────────┘
+    PSU (+) ─────────► Relay COM
+                           │
+                       Relay NO
+                           │
+                    Solenoid wire 1
+                           │
+                     [ SOLENOID ]
+                           │
+                    Solenoid wire 2
+                           │
+    PSU (−) ◄──────────────┘
 
-    ⚡ FLYBACK DIODE: Clip or solder a 1N4007 diode across the
+    FLYBACK DIODE: Clip or solder a 1N4007 diode across the
     solenoid's two wires (wire 1 and wire 2). The silver stripe
     on the diode (cathode) must face toward wire 1 (the side
     connected to the relay). See "What is a Flyback Diode?" above.

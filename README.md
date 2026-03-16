@@ -133,9 +133,16 @@ When you turn off an electromagnet (like the solenoid inside the SSSCat), the co
 
 ### Modifying the SSSCat
 
+> **⚠️ These steps have not been verified on an actual SSSCat unit yet.** The
+> general approach (disconnect solenoid from PCB, route wires out) is confirmed
+> by [community projects](https://forum.arduino.cc/t/ssscat-arduino-hack/363398),
+> but internal layout may vary between SSSCat models and revisions. Open your
+> unit and inspect it before cutting anything. Photos of your specific internals
+> are welcome — we'll update these steps once verified.
+
 You'll open the SSSCat device, disconnect its internal solenoid from the built-in
-motion sensor PCB, and route the solenoid wires out so your Arduino can control
-them. This takes about 10 minutes.
+motion sensor PCB, and route the solenoid and battery wires out so your Arduino
+can control them.
 
 **Tools needed:** Small Phillips screwdriver, wire cutters/strippers, and either
 wire nuts, lever connectors (like Wago 221), or a soldering iron.

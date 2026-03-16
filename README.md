@@ -59,7 +59,7 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 |---|------|------|--------|
 | 12 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
 | 13 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
-| 14 | Mounting bracket materials | Scrap wood (1×2 lumber), hose clamp, #6 wood screws, rubber bumper pad — see [Mounting](#mounting-the-solenoid-and-can) | $0–5 |
+| 14 | Mounting bracket materials | Corner braces, hose clamp, 1×2 lumber, M3×25mm bolts, rubber bumper pads — see [Mounting](#mounting-the-solenoid-and-can) | $5–10 |
 
 **Estimated total: ~$128** (plus the Arduino if you don't have one)
 
@@ -156,80 +156,145 @@ When you turn off an electromagnet (like a solenoid or relay coil), the collapsi
 ### Mounting the Solenoid and Can
 
 The solenoid must push **straight down** onto the SSSCat can's valve stem.
-The can is ~6" tall and ~2" wide, so a simple wood bracket works well.
+Below is a simple wood bracket you can build with basic tools and hardware-store
+parts. No woodworking experience needed — all joints use small metal corner
+braces, so nothing depends on tricky screw techniques.
 
-#### Mounting Materials
+#### What You'll Need
 
-| Item | Purpose | Where to get it |
-|------|---------|-----------------|
-| Base board, ~8" × 5" | Stable platform | Scrap wood, cutting board, or thick acrylic |
-| Wood post, ~7" × 1.5" × 0.75" | Vertical support (taller than the can) | 1×2 lumber from any hardware store |
-| Wood arm, ~4" × 1.5" × 0.75" | Horizontal arm over the can | Same 1×2 lumber |
-| Hose clamp, 1.5"–2.5" range | Holds the can to the base board | Hardware store plumbing aisle |
-| 2× M3 bolts (8–10mm) + nuts | Bolt the solenoid to the arm | Hardware store fastener aisle |
-| Small rubber bumper pad | Glue to plunger tip for grip | Hardware store — self-adhesive door/furniture bumpers |
-| Wood screws, #6 × 1.5" (×4) | Assemble post, arm, and hose clamp | Hardware store |
+**Tools** (borrow these if you don't have them):
+
+- Phillips screwdriver (or a drill with a Phillips bit)
+- Drill with a 1/8" (3mm) bit — for pilot holes and solenoid bolt holes
+- Pencil and ruler or tape measure
+- Superglue (a tiny tube is fine)
+
+**Mounting Materials:**
+
+| # | Item | Purpose | Where to find it |
+|---|------|---------|------------------|
+| 1 | Base board, ~10" × 6", at least 1/2" thick | Stable platform | Scrap plywood, a cutting board, or ask the hardware store to cut one |
+| 2 | 1×2 lumber, ~14" long (you'll cut two pieces) | Post + arm | Hardware store lumber aisle — ask them to cut a 7.5" piece and a 5" piece |
+| 3 | 3× small corner braces (~1.5" × 1.5"), with screws | Joins wood pieces together strongly | Hardware store fastener/bracket aisle, usually sold in packs of 4 |
+| 4 | Hose clamp, 1.5"–2.5" range | Holds the can upright | Hardware store plumbing aisle |
+| 5 | 2× M3 × 25mm bolts + 2× M3 nuts + 2× M3 washers | Bolt solenoid to arm | Hardware store fastener aisle (metric drawer) |
+| 6 | Small thin rubber bumper pads (~1–2mm thick) | Plunger tip grip | Self-adhesive clear "furniture dots" from hardware store |
+| 7 | 4× rubber or felt furniture pads | Protect counter, add grip | Self-adhesive pads, usually near the bumpers |
+| 8 | 2–3 small zip-ties or cable clips | Secure the solenoid wires | Hardware store electrical aisle |
+
+> **What's a corner brace?** A small L-shaped piece of metal with screw holes.
+> You screw one side to one piece of wood and the other side to the other piece.
+> It makes a strong right-angle joint without any skill — just line it up and
+> drive the screws. They usually come with their own short screws.
 
 #### How to Build It
 
 ```
     Side view:
 
-    ┌──┬═══════════════┐ ◄── arm (~4" long)
-    │  │  ┌──────────┐ │
-    │  │  │ SOLENOID │ │ ◄── bolted underneath arm
-    │  │  │    ||    │ │
-    │  │  └────||────┘ │
-    │  │      (●)      │ ◄── rubber bumper on plunger tip
-    │  │    ~3mm gap   │
-    │  │  ┌──────────┐ │
-    │  │  │  SSSCat  │ │ ◄── held upright by hose clamp
-    │  │  │   can    │ │
-    │  │  │          │ │
-    │  │  └──────────┘ │
-    └──┘                 
-     ▲                   
-     post (~7")          
-                         
-    ════════════════════ base board
+    ┌──┬═══════════════════┐ ◄── arm (~5")
+    │  │     ┌──────────┐  │
+    │╔═╡     │ SOLENOID │  │ ◄── bolted under arm (M3 bolts)
+    │║ │     │    ||    │  │
+    │║ │     └────||────┘  │
+    │║ │         (●)       │ ◄── rubber bumper on tip
+    │║ │       ~5mm gap    │
+    │║ │     ┌──────────┐  │
+    │║ │     │  SSSCat  │  │ ◄── held by hose clamp
+    │║ │     │   can    │  │
+    │║ │     │          │  │
+    │╚═╡     └──────────┘  │
+    └──┘                    
+     ▲  ▲                   
+     │  └── corner braces (marked ║)
+     post (~7.5")           
+                            
+    ════════════════════════ base board + rubber feet
 ```
 
-**Steps:**
+**Prep — attach the solenoid to the arm before building the bracket:**
 
-1. **Screw the post to the base board.** Stand the 7" post vertically at one end
-   of the board and drive two wood screws up through the bottom of the board
-   into the post. The post must be taller than the can (~6").
+1. Place the solenoid flat-end-down on the 5" arm piece. The flat end has M3
+   threaded holes (small screw holes in the metal).
 
-2. **Attach the arm to the post.** Screw the 4" arm horizontally to the top of
-   the post, forming an upside-down "L". The arm should extend out over where
-   the can will sit.
+2. Line up two of the solenoid's holes with the arm. Mark the two spots on the
+   wood with a pencil.
 
-3. **Bolt the solenoid to the arm.** Drill two holes through the arm that line
-   up with the solenoid's M3 mounting holes (on the flat end of the solenoid
-   body). Bolt the solenoid to the **underside** of the arm so the plunger
-   points straight down.
+3. Drill through the arm at both marks with the 1/8" (3mm) bit.
 
-4. **Add a rubber bumper to the plunger tip.** Peel and stick a small rubber
-   bumper pad (the kind used on cabinet doors) onto the end of the plunger.
-   This prevents the metal plunger from slipping off the narrow valve stem
-   and cushions repeated impacts.
+4. Flip the arm over. Push an M3 × 25mm bolt down through each hole from the
+   top of the arm. Place a washer under each bolt head (this spreads the load
+   so the bolt doesn't dig into the wood).
 
-5. **Clamp the can to the base board.** Stand the SSSCat refill can upright
-   under the solenoid. Wrap the hose clamp around the can and screw through
-   the base board (or use a zip-tie cinched to a screw in the board). The can
-   should not wobble or slide when the solenoid fires.
+5. Thread each bolt into the solenoid's threaded holes underneath. Tighten with
+   your fingers, then snug with a screwdriver. The solenoid now hangs below the
+   arm with its plunger pointing straight down.
 
-6. **Adjust the gap.** With the solenoid unpowered, the rubber bumper on the
-   plunger tip should hover ~3mm above the can's valve stem. If it's too high
-   or too low, loosen the hose clamp and slide the can, or add a thin shim
-   (washer) between the solenoid and the arm. The solenoid has 10mm of stroke,
-   so after crossing the 3mm gap it still has plenty of travel to press the
-   valve (~1–2mm of valve travel needed).
+6. Stick a thin rubber bumper pad (~1–2mm thick) onto the plunger tip. Clean the
+   tip with rubbing alcohol first so the adhesive sticks. Then add a tiny drop
+   of superglue around the edge — the bumper will take repeated impacts, so the
+   glue keeps it from popping off over time.
 
-7. **Test.** Power the solenoid briefly (see Hardware Test below). You should
-   hear a click and feel a puff of air. If the can hisses but doesn't spray
-   well, the plunger may be off-center — loosen and re-align. If no spray at
-   all, reduce the gap.
+**Build the bracket:**
+
+7. **Attach the post to the base board.** Stand the 7.5" post vertically near
+   one end of the base board. Hold a corner brace in the inside corner where
+   the post meets the board. Mark the holes with a pencil, drill small pilot
+   holes (this prevents the wood from splitting), then drive the corner brace
+   screws. Repeat with a second corner brace on the other side of the post.
+
+   Push the post sideways — it should feel solid and not wobble.
+
+8. **Find the right arm height.** Stand the SSSCat can upright on the base board
+   next to the post. Hold the arm + solenoid assembly against the post and
+   slide it up or down until the rubber bumper on the plunger tip hovers about
+   **5mm** (roughly the width of a pencil) above the can's valve stem.
+   Mark this position on the post with a pencil.
+
+   > **Why 5mm?** The bumper pad adds ~1–2mm, so the actual air gap is ~3–4mm.
+   > The solenoid has 10mm of total stroke — plenty to cross the gap and press
+   > the valve (which only needs ~1–2mm of push).
+
+9. **Attach the arm to the post.** Hold the arm at your pencil mark. Place the
+   third corner brace in the inside corner where the arm meets the post. Drill
+   pilot holes, then drive the screws. The arm should stick out horizontally
+   over where the can sits.
+
+   Push down on the end of the arm — it should feel rigid. If it flexes, add a
+   second corner brace on the opposite side of the joint.
+
+10. **Clamp the can.** Stand the SSSCat can upright on the base board, directly
+    below the solenoid. Look straight down from above to confirm the bumper is
+    centered over the valve stem.
+
+    Open the hose clamp, loop it around the can, and snug it at roughly
+    mid-height on the can. Then drive a short wood screw through the hose
+    clamp's band (the flat metal strip) into the base board — this pins the
+    clamp so the can can't slide sideways.
+
+    > **Do not over-tighten the hose clamp.** The can is thin-walled and
+    > pressurized. Tighten until the can feels snug but the clamp isn't
+    > visibly squeezing the can inward. Hand-tight on the worm screw is enough.
+
+11. **Route the solenoid wires.** Run the two wires from the solenoid down along
+    the post toward the base board. Secure them every few inches with a zip-tie
+    or cable clip around the post. Leave a small loop of slack at the top so
+    the wires don't tug when the solenoid fires. Connect to the relay and
+    flyback diode as described in the [Wiring Diagram](#wiring-diagram) above.
+
+12. **Add rubber feet.** Stick rubber or felt furniture pads on the four corners
+    of the base board's underside. This protects your counter from scratches
+    and keeps the whole assembly from sliding.
+
+    > **Tip:** If your cat is strong enough to knock the bracket over, clamp the
+    > base board to the counter edge with a small C-clamp, or stick heavy-duty
+    > mounting tape to the underside.
+
+13. **Test.** Upload the Hardware Test sketch (see [Step 3](#3-test-your-wiring-hardware-test)
+    in Software Setup). You should hear a click and feel a puff of air from the
+    nozzle. If no spray, reduce the gap by loosening the arm's corner brace and
+    sliding the arm down slightly. If the plunger hits off-center, loosen the
+    hose clamp screw and reposition the can.
 
 > **Important:** Always keep the SSSCat can **upright** (nozzle pointing
 > horizontally or slightly downward). Never mount it upside down — liquid
@@ -394,7 +459,7 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 |---------|----------|
 | "HUSKYLENS 2 not found" | Check I2C wiring (SDA→A4, SCL→A5). Ensure separate USB-C power to HUSKYLENS 2 |
 | Cat detected but no spray | Check relay wiring on D7. Verify 12V power to solenoid. Open Serial Monitor |
-| Solenoid clicks but can doesn't spray | Plunger not centered on valve — re-align the bracket. Or gap too large — reduce to ~2mm |
+| Solenoid clicks but can doesn't spray | Plunger not centered on valve — look from above and re-align. Or gap too large — loosen arm brace and slide down |
 | Solenoid doesn't click at all | Check 12V PSU and diode orientation (stripe toward +). Try swapping relay NO/NC |
 | Too many false positives | Increase `MIN_CONFIDENCE`, `OVERLAP_THRESHOLD`, or `DEBOUNCE_FRAMES` in config.h |
 | Sprays when cat is on floor | Make sure counter is learned as ID 2. Reposition camera angle |

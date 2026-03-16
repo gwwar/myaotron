@@ -54,8 +54,6 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 **Estimated total: ~$100** (plus the Arduino if you don't have one)
 
 > **Why PetSafe SSSCat?** Regular keyboard duster cans contain difluoroethane — a propellant that is **toxic to cats** (causes CNS depression and cardiac arrhythmia). SSSCat refills are specifically formulated and tested for safe use around pets.
->
-> **Why hack the SSSCat instead of building from scratch?** The SSSCat device already contains a solenoid perfectly aligned with the can's valve, a nozzle to direct the spray, and a housing that holds everything together. Reusing it eliminates the need for an external solenoid, a 12V power supply, and a mounting bracket — cutting parts count nearly in half.
 
 ## Step-by-Step Wiring
 

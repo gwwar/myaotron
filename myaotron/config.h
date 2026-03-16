@@ -44,8 +44,8 @@
 #define PERSON_EXCLUSION_ENABLED 1
 
 // ─── Deterrent Output ────────────────────────────────────────────
-// Digital pin connected to relay/MOSFET controlling the push
-// solenoid that presses the compressed air can trigger.
+// Digital pin connected to relay module that switches battery power
+// to the SSSCat's internal solenoid.
 #define DETERRENT_PIN 7
 
 // Set to 1 if your relay module is active-LOW (common with
@@ -56,9 +56,9 @@
 #define SPRAY_DURATION_MS 500
 
 // Cooldown in milliseconds between consecutive sprays to avoid
-// overwhelming the cat (and your solenoid).
-// WARNING: Setting this below 2000ms risks solenoid overheating.
-// The push solenoid is rated for intermittent duty only.
+// overwhelming the cat. The SSSCat's internal solenoid is designed
+// for repeated use, but a cooldown prevents the cat from being
+// startled too frequently.
 #define SPRAY_COOLDOWN_MS 5000
 
 // ─── Safety Limits ───────────────────────────────────────────────

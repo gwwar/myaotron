@@ -2,24 +2,18 @@
 
 Cat-on-counter detection and deterrent system powered by [HUSKYLENS 2](https://wiki.dfrobot.com/sen0638/docs/22636/) AI camera.
 
-Detects when your cat jumps on the kitchen counter and gives them a harmless puff of air to discourage the behavior — automatically and humanely. Uses a push solenoid to press the trigger on a [PetSafe SSSCat](https://www.petsafe.net/ssscat) compressed air can.
+Detects when your cat jumps on the kitchen counter and gives them a harmless puff of air to discourage the behavior — automatically and humanely. Hacks a [PetSafe SSSCat](https://www.petsafe.net/ssscat) spray device, replacing its basic motion sensor with AI-powered cat detection.
 
 ## How It Works
 
 ```
 ┌──────────┐       ┌─────────┐       ┌───────┐       ┌──────────┐
-│HUSKYLENS │─I2C──►│ Arduino │──D7──►│ Relay │─12V──►│  Push    │
-│    2     │       │   Uno   │       │Module │       │ Solenoid │
-└──────────┘       └─────────┘       └───────┘       └────┬─────┘
-                                                          │ pushes
-                                                          ▼
-                                                    ┌──────────┐
-                                                    │  SSSCat  │
-                                                    │   Can    │──► puff!
-                                                    └──────────┘
+│HUSKYLENS │─I2C──►│ Arduino │──D7──►│ Relay │──6V──►│  SSSCat  │
+│    2     │       │   Uno   │       │Module │       │ (hacked) │──► puff!
+└──────────┘       └─────────┘       └───────┘       └──────────┘
 ```
 
-The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to detect both **cats** and **surfaces** (dining table/counter) in the camera frame. When a cat-on-counter event is confirmed, the Arduino energizes a push solenoid that physically presses the SSSCat can's trigger button, releasing a short burst of air.
+The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to detect both **cats** and **surfaces** (dining table/counter) in the camera frame. When a cat-on-counter event is confirmed, the Arduino closes a relay that powers the SSSCat's internal solenoid via an external battery pack, releasing a short burst of air — just like the original device, but triggered by AI instead of a basic motion sensor.
 
 ### Detection Modes
 
@@ -44,24 +38,20 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 
 | # | Part | Link | ~Price |
 |---|------|------|--------|
-| 6 | PetSafe SSSCat refill can (3.89 oz) | [Amazon](https://www.amazon.com/dp/B0721735K9) / [PetSafe](https://www.petsafe.net/ssscat) | $10 |
-| 7 | Push solenoid — 12V | [Adafruit 413](https://www.adafruit.com/product/413) | $10 |
-| 8 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
-| 9 | 12V 1A DC power supply (barrel jack) | [Adafruit 798](https://www.adafruit.com/product/798) | $9 |
-| 10 | DC barrel jack to screw terminal adapter | [Adafruit 368](https://www.adafruit.com/product/368) | $2 |
-| 11 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
-
-> **What's a barrel jack adapter?** The 12V power supply has a round plug (barrel jack) on the end. This small adapter lets you plug it in and exposes **+** and **−** screw terminals so you can attach wires to it.
+| 6 | PetSafe SSSCat **complete device** (includes one refill can) | [Amazon](https://www.amazon.com/dp/B000RIA95G) / [PetSafe](https://www.petsafe.net/ssscat) | $25 |
+| 7 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
+| 8 | 4× AAA batteries | Any brand (for the SSSCat's built-in battery compartment) | $3 |
+| 9 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
 
 ### Misc
 
 | # | Part | Link | ~Price |
 |---|------|------|--------|
-| 12 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
-| 13 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
-| 14 | Mounting bracket materials | Corner braces, hose clamp, 1×2 lumber, M3×25mm bolts, rubber bumper pads — see [Mounting](#mounting-the-solenoid-and-can) | $5–10 |
+| 10 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
+| 11 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
+| 12 | Wire nuts or small lever connectors (2-pack) | Hardware store electrical aisle | $2 |
 
-**Estimated total: ~$128** (plus the Arduino if you don't have one)
+**Estimated total: ~$100** (plus the Arduino if you don't have one)
 
 > **Why PetSafe SSSCat?** Regular keyboard duster cans contain difluoroethane — a propellant that is **toxic to cats** (causes CNS depression and cardiac arrhythmia). SSSCat refills are specifically formulated and tested for safe use around pets.
 
@@ -75,15 +65,11 @@ I2C (pronounced "eye-squared-see") is a communication protocol that uses just tw
 
 ### What is a Relay?
 
-A relay is an electrically controlled switch. The Arduino sends a small signal (5V) to the relay, which then switches a larger circuit (12V) on or off. This lets the low-power Arduino control the higher-power solenoid.
-
-### What is a Solenoid?
-
-A solenoid is an electromagnet with a metal plunger inside. When you apply power, the plunger pushes out (or pulls in). When power is removed, a spring pushes it back. In this project, the solenoid's plunger pushes the SSSCat can's trigger button.
+A relay is an electrically controlled switch. The Arduino sends a small signal (5V) to the relay, which then switches a separate circuit (6V batteries) on or off. This lets the low-power Arduino control the SSSCat's solenoid.
 
 ### What is a Flyback Diode?
 
-When you turn off an electromagnet (like a solenoid or relay coil), the collapsing magnetic field creates a brief voltage spike that can damage other components. A flyback diode absorbs this spike safely. It's a small component with a stripe on one end (marking the direction). You'll clip or solder it across the solenoid's two wires — see the [wiring steps](#step-by-step) below for exactly how.
+When you turn off an electromagnet (like the solenoid inside the SSSCat), the collapsing magnetic field creates a brief voltage spike that can damage other components. A flyback diode absorbs this spike safely. It's a small component with a stripe on one end (marking the direction). You'll connect it across the SSSCat solenoid wires — see the [wiring steps](#step-by-step) below for exactly how.
 
 ### Wiring Diagram
 
@@ -100,24 +86,21 @@ When you turn off an electromagnet (like a solenoid or relay coil), the collapsi
                     │  GND      ──────────┼──── Relay GND
                     └─────────────────────┘
 
-    12V Power Supply Circuit (via barrel jack adapter):
+    6V Battery Circuit (uses SSSCat's built-in battery compartment):
 
-    PSU (+) ─────────► Relay COM
+    Two wires exit the SSSCat housing (see "Modifying the SSSCat"):
+      Wire A = battery (+)
+      Wire B = solenoid wire 1
+
+    Inside the SSSCat, battery (−) and solenoid wire 2 are
+    connected together, and the flyback diode is across the
+    solenoid. So only 2 wires come out:
+
+    Wire A ──────────► Relay COM
                            │
                        Relay NO
                            │
-                    Solenoid wire 1
-                           │
-                     [ SOLENOID ]
-                           │
-                    Solenoid wire 2
-                           │
-    PSU (−) ◄──────────────┘
-
-    FLYBACK DIODE: Clip or solder a 1N4007 diode across the
-    solenoid's two wires (wire 1 and wire 2). The silver stripe
-    on the diode (cathode) must face toward wire 1 (the side
-    connected to the relay). See "What is a Flyback Diode?" above.
+    Wire B ◄───────────────┘
 ```
 
 > **Note about wire colors:** The colors listed above (blue, yellow, black, red) are for the DFRobot Gravity I2C cable included with the HUSKYLENS 2. If you use a different I2C cable, check its documentation for the correct SDA/SCL/GND/VCC wires.
@@ -138,172 +121,87 @@ When you turn off an electromagnet (like a solenoid or relay coil), the collapsi
    - **VCC** → Arduino **5V**
    - **GND** → Arduino **GND**
 
-3. **Connect the 12V power supply:**
-   - Plug the power supply's round barrel plug into the barrel jack adapter.
-   - You now have **+** and **−** screw terminals exposed on the adapter.
-   - Connect the **+** screw terminal to the relay's **COM** (common) terminal using a jumper wire.
+3. **Connect the two SSSCat wires to the relay:**
+   - Connect **Wire A** (battery +) to the relay's **COM** (common) terminal.
+   - Connect **Wire B** (solenoid wire 1) to the relay's **NO** (normally open) terminal.
+   - That's it — the battery (−), solenoid wire 2, and flyback diode are all connected inside the SSSCat housing (see [Modifying the SSSCat](#modifying-the-ssscat) below).
 
-4. **Connect the push solenoid:**
-   - Connect one solenoid wire to the relay's **NO** (normally open) terminal.
-   - Connect the other solenoid wire to the **−** screw terminal of the barrel jack adapter.
-   - **Add the flyback diode** (see "What is a Flyback Diode?" above): Clip or solder a 1N4007 diode directly across the solenoid's two wires. The **silver stripe on the diode** (cathode) must face the wire that goes to the relay (wire 1). This protects the relay from voltage spikes when the solenoid turns off.
-
-5. **Power the Arduino:**
+4. **Power the Arduino:**
    - Connect the Arduino to your computer (or a USB power adapter) with the USB-B cable.
 
-> **Safety note:** Double-check all connections before powering on. The 12V circuit should only power the solenoid through the relay. Never connect 12V to the Arduino's 5V or signal pins.
+> **Safety note:** Double-check all connections before powering on. The 6V battery circuit should only power the SSSCat solenoid through the relay. Never connect the batteries to the Arduino's 5V or signal pins.
 
-### Mounting the Solenoid and Can
+### Modifying the SSSCat
 
-The solenoid must push **straight down** onto the SSSCat can's valve stem.
-Below is a simple wood bracket you can build with basic tools and hardware-store
-parts. No woodworking experience needed — all joints use small metal corner
-braces, so nothing depends on tricky screw techniques.
+> **⚠️ These steps have not been verified on an actual SSSCat unit yet.** The
+> general approach (disconnect solenoid from PCB, route wires out) is confirmed
+> by [community projects](https://forum.arduino.cc/t/ssscat-arduino-hack/363398),
+> but internal layout may vary between SSSCat models and revisions. Open your
+> unit and inspect it before cutting anything. Photos of your specific internals
+> are welcome — we'll update these steps once verified.
 
-#### What You'll Need
+You'll open the SSSCat device, disconnect its internal solenoid from the built-in
+motion sensor PCB, and route the solenoid and battery wires out so your Arduino
+can control them.
 
-**Tools** (borrow these if you don't have them):
+**Tools needed:** Small Phillips screwdriver, wire cutters/strippers, and either
+wire nuts, lever connectors (like Wago 221), or a soldering iron.
 
-- Phillips screwdriver (or a drill with a Phillips bit)
-- Drill with a 1/8" (3mm) bit — for pilot holes and solenoid bolt holes
-- Pencil and ruler or tape measure
-- Superglue (a tiny tube is fine)
+**Steps:**
 
-**Mounting Materials:**
+1. **Remove the can.** Twist the SSSCat's top unit (the part with the sensor
+   and nozzle) off the refill can. Set the can aside — you'll put it back later.
 
-| # | Item | Purpose | Where to find it |
-|---|------|---------|------------------|
-| 1 | Base board, ~10" × 6", at least 1/2" thick | Stable platform | Scrap plywood, a cutting board, or ask the hardware store to cut one |
-| 2 | 1×2 lumber, ~14" long (you'll cut two pieces) | Post + arm | Hardware store lumber aisle — ask them to cut a 7.5" piece and a 5" piece |
-| 3 | 3× small corner braces (~1.5" × 1.5"), with screws | Joins wood pieces together strongly | Hardware store fastener/bracket aisle, usually sold in packs of 4 |
-| 4 | Hose clamp, 1.5"–2.5" range | Holds the can upright | Hardware store plumbing aisle |
-| 5 | 2× M3 × 25mm bolts + 2× M3 washers | Bolt solenoid to arm (threads into solenoid — no nuts needed) | Hardware store fastener aisle (metric drawer) |
-| 6 | Small thin rubber bumper pads (~1–2mm thick) | Plunger tip grip | Self-adhesive clear "furniture dots" from hardware store |
-| 7 | 4× rubber or felt furniture pads | Protect counter, add grip | Self-adhesive pads, usually near the bumpers |
-| 8 | 2–3 small zip-ties or cable clips | Secure the solenoid wires | Hardware store electrical aisle |
+2. **Open the top unit.** Remove the screws holding the housing together (usually
+   2–4 small Phillips screws on the bottom or sides). Gently pry the two halves
+   apart. You'll see a small PCB (circuit board) with the motion sensor, a
+   battery compartment, and the solenoid — a small metal cylinder near the
+   spray nozzle.
 
-> **What's a corner brace?** A small L-shaped piece of metal with screw holes.
-> You screw one side to one piece of wood and the other side to the other piece.
-> It makes a strong right-angle joint without any skill — just line it up and
-> drive the screws. They usually come with their own short screws.
+3. **Find the solenoid wires.** The solenoid has **two wires** running to the
+   PCB. They may be soldered directly or connected with a small plug. Follow
+   them from the metal solenoid body to where they attach to the circuit board.
 
-#### How to Build It
+4. **Disconnect the solenoid from the PCB.** If the wires have a plug, simply
+   unplug it. If soldered, clip the wires close to the PCB (not close to the
+   solenoid — you want to keep as much wire length as possible).
 
-```
-    Side view:
+5. **Find the battery wires.** The battery compartment also has **two wires**
+   going to the PCB — a red (+) and black (−). Cut these from the PCB too,
+   keeping as much wire length as possible.
 
-    ┌──┬═══════════════════┐ ◄── arm (~5")
-    │  │     ┌──────────┐  │
-    │╔═╡     │ SOLENOID │  │ ◄── bolted under arm (M3 bolts)
-    │║ │     │    ||    │  │
-    │║ │     └────||────┘  │
-    │║ │         (●)       │ ◄── rubber bumper on tip
-    │║ │       ~5mm gap    │
-    │║ │     ┌──────────┐  │
-    │║ │     │  SSSCat  │  │ ◄── held by hose clamp
-    │║ │     │   can    │  │
-    │║ │     │          │  │
-    │╚═╡     └──────────┘  │
-    └──┘                    
-     ▲  ▲                   
-     │  └── corner braces (marked ║)
-     post (~7.5")           
-                            
-    ════════════════════════ base board + rubber feet
-```
+6. **Make the internal connections.** Inside the housing, connect these three
+   things together:
+   - **Battery (−) wire** to **solenoid wire 2** (either solenoid wire — pick one
+     and call it "wire 2"). Use a wire nut or lever connector.
+   - **Flyback diode** across the two solenoid wires. The **silver stripe**
+     (cathode) must face solenoid wire 1 (the one NOT connected to the battery).
+     Twist or solder the diode leads onto the solenoid wires.
 
-**Prep — attach the solenoid to the arm before building the bracket:**
+7. **Extend the two outgoing wires.** You need two wires to reach the relay
+   (about 12–18 inches):
+   - **Wire A** = battery (+) wire
+   - **Wire B** = solenoid wire 1 (the free one, not connected to battery −)
 
-1. Place the solenoid flat-end-down on the 5" arm piece. The flat end has M3
-   threaded holes (small screw holes in the metal).
+   If the existing wires are long enough, great. If not, splice on extension
+   wires using wire nuts or lever connectors. Strip about 1/4" of insulation
+   from each end before connecting.
 
-2. Line up two of the solenoid's holes with the arm. Mark the two spots on the
-   wood with a pencil.
+8. **Route the wires out.** Drill or cut a small hole (~1/4") in the housing
+   wall (pick a spot that won't interfere with the can or nozzle). Thread
+   Wire A and Wire B through the hole.
 
-3. Drill through the arm at both marks with the 1/8" (3mm) bit.
+9. **Reassemble the housing.** Put the two halves back together and replace the
+   screws. The solenoid and flyback diode stay inside, perfectly aligned — 
+   exactly where PetSafe designed them to be.
 
-4. Flip the arm over. Push an M3 × 25mm bolt down through each hole from the
-   top of the arm. Place a washer under each bolt head (this spreads the load
-   so the bolt doesn't dig into the wood).
+10. **Insert batteries and snap the can back on.** Put 4× AAA batteries into the
+    SSSCat's battery compartment (the compartment door is still accessible from
+    outside). Then twist the refill can back into the top unit.
 
-5. Thread each bolt into the solenoid's threaded holes underneath. Tighten with
-   your fingers, then snug with a screwdriver. The solenoid now hangs below the
-   arm with its plunger pointing straight down.
-
-6. Stick a thin rubber bumper pad (~1–2mm thick) onto the plunger tip. Clean the
-   tip with rubbing alcohol first so the adhesive sticks. Then add a tiny drop
-   of superglue around the edge — the bumper will take repeated impacts, so the
-   glue keeps it from popping off over time.
-
-**Build the bracket:**
-
-7. **Attach the post to the base board.** Stand the 7.5" post vertically near
-   one end of the base board. Hold a corner brace in the inside corner where
-   the post meets the board. Mark the holes with a pencil, drill small pilot
-   holes (this prevents the wood from splitting), then drive the corner brace
-   screws. Repeat with a second corner brace on the other side of the post.
-
-   Push the post sideways — it should feel solid and not wobble.
-
-8. **Find the right arm height.** Stand the SSSCat can upright on the base board
-   next to the post. Hold the arm + solenoid assembly against the post and
-   slide it up or down until the rubber bumper on the plunger tip hovers about
-   **5mm** (roughly the width of a pencil) above the can's valve stem.
-   Mark this position on the post with a pencil.
-
-   > **Why 5mm?** The bumper pad adds ~1–2mm, so the actual air gap is ~3–4mm.
-   > The solenoid has 10mm of total stroke — plenty to cross the gap and press
-   > the valve (which only needs ~1–2mm of push).
-
-9. **Attach the arm to the post.** Hold the arm at your pencil mark. Place the
-   third corner brace in the inside corner where the arm meets the post. Drill
-   pilot holes, then drive the screws. The arm should stick out horizontally
-   over where the can sits.
-
-   Push down on the end of the arm — it should feel rigid. If it flexes, add a
-   second corner brace on the opposite side of the joint.
-
-10. **Clamp the can.** Stand the SSSCat can upright on the base board, directly
-    below the solenoid. Look straight down from above to confirm the bumper is
-    centered over the valve stem.
-
-    Open the hose clamp, loop it around the can, and snug it at roughly
-    mid-height on the can. Then drive a short wood screw through the hose
-    clamp's band (the flat metal strip) into the base board — this pins the
-    clamp so the can can't slide sideways.
-
-    > **Do not over-tighten the hose clamp.** The can is thin-walled and
-    > pressurized. Tighten until the can feels snug but the clamp isn't
-    > visibly squeezing the can inward. Hand-tight on the worm screw is enough.
-
-11. **Route the solenoid wires.** Run the two wires from the solenoid down along
-    the post toward the base board. Secure them every few inches with a zip-tie
-    or cable clip around the post. Leave a small loop of slack at the top so
-    the wires don't tug when the solenoid fires. Connect to the relay and
-    flyback diode as described in the [Wiring Diagram](#wiring-diagram) above.
-
-12. **Add rubber feet.** Stick rubber or felt furniture pads on the four corners
-    of the base board's underside. This protects your counter from scratches
-    and keeps the whole assembly from sliding.
-
-    > **Tip:** If your cat is strong enough to knock the bracket over, clamp the
-    > base board to the counter edge with a small C-clamp, or stick heavy-duty
-    > mounting tape to the underside.
-
-13. **Test.** Upload the Hardware Test sketch (see [Step 3](#3-test-your-wiring-hardware-test)
-    in Software Setup). You should hear a click and feel a puff of air from the
-    nozzle. If no spray, reduce the gap by loosening the arm's corner brace and
-    sliding the arm down slightly. If the plunger hits off-center, loosen the
-    hose clamp screw and reposition the can.
-
-> **Important:** Always keep the SSSCat can **upright** (nozzle pointing
-> horizontally or slightly downward). Never mount it upside down — liquid
-> propellant could escape and cause frostbite.
->
-> **Overstroke is OK.** The solenoid has more travel (10mm) than the valve
-> needs (1–2mm). This is fine — aerosol valves have internal mechanical stops,
-> and the solenoid's force (8–10N at contact) is within normal hand-press
-> range. The SSSCat's own built-in solenoid works the same way.
+> **The SSSCat's PIR sensor and PCB are now inert.** With both the solenoid and
+> batteries disconnected from the PCB, the original motion sensor has no power
+> and can't trigger anything. Your Arduino controls everything through the relay.
 
 ## Software Setup
 
@@ -382,7 +280,7 @@ Edit `myaotron/config.h` to adjust settings. The defaults work well for most set
 - Mount the camera 2–3 feet above the counter, angled down ~45°. A kitchen cabinet underside, a shelf, or a small clamp (like a spring clamp or phone mount) all work well. Adhesive command strips can hold the lightweight HUSKYLENS in place without drilling.
 - Make sure the entire counter surface is in frame
 - Avoid pointing at windows (bright backlight hurts detection)
-- Position the SSSCat can + mount so the nozzle points across the counter at cat-jump height
+- Position the SSSCat device so its nozzle points across the counter at cat-jump height
 - Keep the can 1–3 feet from where cats typically land
 
 ## Detection Logic (MODE_DUAL_OVERLAP)
@@ -458,15 +356,15 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 | Problem | Solution |
 |---------|----------|
 | "HUSKYLENS 2 not found" | Check I2C wiring (SDA→A4, SCL→A5). Ensure separate USB-C power to HUSKYLENS 2 |
-| Cat detected but no spray | Check relay wiring on D7. Verify 12V power to solenoid. Open Serial Monitor |
-| Solenoid clicks but can doesn't spray | Plunger not centered on valve — look from above and re-align. Or gap too large — loosen arm brace and slide down |
-| Solenoid doesn't click at all | Check 12V PSU and diode orientation (stripe toward +). Try swapping relay NO/NC |
+| Cat detected but no spray | Check relay wiring on D7. Verify SSSCat has fresh batteries. Open Serial Monitor |
+| Solenoid clicks but can doesn't spray | Can may not be seated properly — twist it firmly into the SSSCat housing. Or solenoid wires may be loose |
+| Solenoid doesn't click at all | Check SSSCat battery compartment (fresh AAA batteries?). Check diode orientation (stripe toward relay side). Try swapping relay NO/NC |
 | Too many false positives | Increase `MIN_CONFIDENCE`, `OVERLAP_THRESHOLD`, or `DEBOUNCE_FRAMES` in config.h |
 | Sprays when cat is on floor | Make sure counter is learned as ID 2. Reposition camera angle |
 | Sprays when I'm at counter | Learn "person" as ID 3 and ensure `PERSON_EXCLUSION_ENABLED` is `1` |
 | Counter not detected | Lower the Detection Threshold in HUSKYLENS 2 settings. Re-learn the surface |
 | LED blinking fast | HUSKYLENS 2 disconnected — check I2C wiring and USB-C power |
-| Relay clicks but solenoid doesn't fire | Check if your relay is active-low; set `DETERRENT_ACTIVE_LOW` to `1` |
+| Relay clicks but solenoid doesn't fire | Check SSSCat has fresh AAA batteries. Check if relay is active-low; set `DETERRENT_ACTIVE_LOW` to `1` |
 | SSSCat can runs out fast | Increase `SPRAY_COOLDOWN_MS` or lower `MAX_SPRAYS_PER_HOUR`. Each can has ~120 sprays |
 | "Rate limit reached" message | Too many sprays in one hour — check for false positives. Resets automatically after 1 hour |
 | "Can depleted" message | Replace the SSSCat refill can and reset the Arduino to zero the spray counter |
@@ -476,9 +374,9 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 - **Never use keyboard duster cans** — they contain difluoroethane, which is toxic to cats
 - **Always mount the SSSCat can upright** — inverted cans can release liquid propellant (frostbite risk)
 - **The flyback diode is required** — without it, the relay contacts will arc and degrade when the solenoid turns off
-- **Keep 12V away from Arduino** — only the solenoid circuit uses 12V; the Arduino runs on 5V via USB
+- **Keep battery circuit separate from Arduino** — the SSSCat's 6V batteries power only the solenoid through the relay; the Arduino runs on 5V via USB
 - **Supervise initial runs** — watch the first few activations to confirm the spray is gentle and aimed correctly
-- **Test solenoid alignment carefully** — the plunger must press straight down onto the valve stem. See [Mounting the Solenoid and Can](#mounting-the-solenoid-and-can) for gap and alignment details
+- **Test after reassembly** — after modifying the SSSCat, snap the can back in and test with the hardware test sketch before deploying
 - **Cats with severe asthma** — SSSCat is safe for most cats, but if your cat has a respiratory condition, consult your vet before using any air-spray deterrent
 
 ## License

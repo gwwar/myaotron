@@ -40,19 +40,18 @@ The HUSKYLENS 2 uses its built-in Object Recognition (MS COCO 80 classes) to det
 |---|------|------|--------|
 | 6 | PetSafe SSSCat **complete device** (includes one refill can) | [Amazon](https://www.amazon.com/dp/B000RIA95G) / [PetSafe](https://www.petsafe.net/ssscat) | $25 |
 | 7 | 1-channel relay module (5V logic, 10A) | [Arduino Official](https://store.arduino.cc/products/1-relay-module-5-vdc-10a-assembled) | $6 |
-| 8 | 4×AAA battery holder with wire leads | [Adafruit 830](https://www.adafruit.com/product/830) | $3 |
-| 9 | 4× AAA batteries | Any brand | $3 |
-| 10 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
+| 8 | 4× AAA batteries | Any brand (for the SSSCat's built-in battery compartment) | $3 |
+| 9 | 1N4007 flyback diode | [Adafruit 755](https://www.adafruit.com/product/755) (pack of 10) | $2 |
 
 ### Misc
 
 | # | Part | Link | ~Price |
 |---|------|------|--------|
-| 11 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
-| 12 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
-| 13 | Wire nuts or small lever connectors (2-pack) | Hardware store electrical aisle | $2 |
+| 10 | Jumper wires (M-M and M-F) | [Adafruit 1957](https://www.adafruit.com/product/1957) | $4 |
+| 11 | Small breadboard (optional, for prototyping) | [Adafruit 64](https://www.adafruit.com/product/64) | $5 |
+| 12 | Wire nuts or small lever connectors (2-pack) | Hardware store electrical aisle | $2 |
 
-**Estimated total: ~$105** (plus the Arduino if you don't have one)
+**Estimated total: ~$100** (plus the Arduino if you don't have one)
 
 > **Why PetSafe SSSCat?** Regular keyboard duster cans contain difluoroethane — a propellant that is **toxic to cats** (causes CNS depression and cardiac arrhythmia). SSSCat refills are specifically formulated and tested for safe use around pets.
 >
@@ -89,24 +88,21 @@ When you turn off an electromagnet (like the solenoid inside the SSSCat), the co
                     │  GND      ──────────┼──── Relay GND
                     └─────────────────────┘
 
-    6V Battery Circuit (4×AAA battery holder):
+    6V Battery Circuit (uses SSSCat's built-in battery compartment):
 
-    Battery (+) ─────► Relay COM
+    Two wires exit the SSSCat housing (see "Modifying the SSSCat"):
+      Wire A = battery (+)
+      Wire B = solenoid wire 1
+
+    Inside the SSSCat, battery (−) and solenoid wire 2 are
+    connected together, and the flyback diode is across the
+    solenoid. So only 2 wires come out:
+
+    Wire A ──────────► Relay COM
                            │
                        Relay NO
                            │
-                  SSSCat solenoid wire 1
-                           │
-                    [ SSSCat internal ]
-                    [    solenoid     ]
-                           │
-                  SSSCat solenoid wire 2
-                           │
-    Battery (−) ◄──────────┘
-
-    FLYBACK DIODE: Connect a 1N4007 diode across the two SSSCat
-    solenoid wires. The silver stripe on the diode (cathode) must
-    face toward wire 1 (the side connected to the relay).
+    Wire B ◄───────────────┘
 ```
 
 > **Note about wire colors:** The colors listed above (blue, yellow, black, red) are for the DFRobot Gravity I2C cable included with the HUSKYLENS 2. If you use a different I2C cable, check its documentation for the correct SDA/SCL/GND/VCC wires.
@@ -127,11 +123,10 @@ When you turn off an electromagnet (like the solenoid inside the SSSCat), the co
    - **VCC** → Arduino **5V**
    - **GND** → Arduino **GND**
 
-3. **Connect the battery holder to the relay and SSSCat solenoid:**
-   - Connect the battery holder's **red (+) wire** to the relay's **COM** (common) terminal.
-   - Connect the relay's **NO** (normally open) terminal to **SSSCat solenoid wire 1** (either wire — see [Modifying the SSSCat](#modifying-the-ssscat) below for how to get these wires).
-   - Connect **SSSCat solenoid wire 2** to the battery holder's **black (−) wire**.
-   - **Add the flyback diode:** Connect a 1N4007 diode across the two SSSCat solenoid wires. The **silver stripe** (cathode) must face the wire connected to the relay (wire 1). Use wire nuts, lever connectors, or solder. This protects the relay from voltage spikes.
+3. **Connect the two SSSCat wires to the relay:**
+   - Connect **Wire A** (battery +) to the relay's **COM** (common) terminal.
+   - Connect **Wire B** (solenoid wire 1) to the relay's **NO** (normally open) terminal.
+   - That's it — the battery (−), solenoid wire 2, and flyback diode are all connected inside the SSSCat housing (see [Modifying the SSSCat](#modifying-the-ssscat) below).
 
 4. **Power the Arduino:**
    - Connect the Arduino to your computer (or a USB power adapter) with the USB-B cable.
@@ -166,26 +161,42 @@ wire nuts, lever connectors (like Wago 221), or a soldering iron.
    unplug it. If soldered, clip the wires close to the PCB (not close to the
    solenoid — you want to keep as much wire length as possible).
 
-5. **Extend the wires out of the housing.** You need the two solenoid wires to
-   reach your relay and battery holder (about 12–18 inches). If the existing
-   wires are long enough, great. If not, splice on extension wires using wire
-   nuts or lever connectors. Strip about 1/4" of insulation from each end
-   before connecting.
+5. **Find the battery wires.** The battery compartment also has **two wires**
+   going to the PCB — a red (+) and black (−). Cut these from the PCB too,
+   keeping as much wire length as possible.
 
-6. **Route the wires out.** Drill or cut a small hole (~1/4") in the housing
-   wall (pick a spot that won't interfere with the can or nozzle). Thread the
-   two solenoid wires through the hole.
+6. **Make the internal connections.** Inside the housing, connect these three
+   things together:
+   - **Battery (−) wire** to **solenoid wire 2** (either solenoid wire — pick one
+     and call it "wire 2"). Use a wire nut or lever connector.
+   - **Flyback diode** across the two solenoid wires. The **silver stripe**
+     (cathode) must face solenoid wire 1 (the one NOT connected to the battery).
+     Twist or solder the diode leads onto the solenoid wires.
 
-7. **Reassemble the housing.** Put the two halves back together and replace the
-   screws. The solenoid stays inside, perfectly aligned with the spray valve —
-   exactly where PetSafe designed it to be.
+7. **Extend the two outgoing wires.** You need two wires to reach the relay
+   (about 12–18 inches):
+   - **Wire A** = battery (+) wire
+   - **Wire B** = solenoid wire 1 (the free one, not connected to battery −)
 
-8. **Snap the can back on.** Twist the refill can back into the top unit.
+   If the existing wires are long enough, great. If not, splice on extension
+   wires using wire nuts or lever connectors. Strip about 1/4" of insulation
+   from each end before connecting.
 
-> **The SSSCat's PIR sensor and PCB are now inert.** With the solenoid
-> disconnected, the original motion sensor can't trigger anything. You can
-> remove the batteries from the SSSCat — they're no longer used. The external
-> battery holder powers the solenoid through your relay instead.
+8. **Route the wires out.** Drill or cut a small hole (~1/4") in the housing
+   wall (pick a spot that won't interfere with the can or nozzle). Thread
+   Wire A and Wire B through the hole.
+
+9. **Reassemble the housing.** Put the two halves back together and replace the
+   screws. The solenoid and flyback diode stay inside, perfectly aligned — 
+   exactly where PetSafe designed them to be.
+
+10. **Insert batteries and snap the can back on.** Put 4× AAA batteries into the
+    SSSCat's battery compartment (the compartment door is still accessible from
+    outside). Then twist the refill can back into the top unit.
+
+> **The SSSCat's PIR sensor and PCB are now inert.** With both the solenoid and
+> batteries disconnected from the PCB, the original motion sensor has no power
+> and can't trigger anything. Your Arduino controls everything through the relay.
 
 ## Software Setup
 
@@ -340,15 +351,15 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 | Problem | Solution |
 |---------|----------|
 | "HUSKYLENS 2 not found" | Check I2C wiring (SDA→A4, SCL→A5). Ensure separate USB-C power to HUSKYLENS 2 |
-| Cat detected but no spray | Check relay wiring on D7. Verify battery holder is connected and has fresh batteries. Open Serial Monitor |
+| Cat detected but no spray | Check relay wiring on D7. Verify SSSCat has fresh batteries. Open Serial Monitor |
 | Solenoid clicks but can doesn't spray | Can may not be seated properly — twist it firmly into the SSSCat housing. Or solenoid wires may be loose |
-| Solenoid doesn't click at all | Check battery holder polarity and connections. Check diode orientation (stripe toward relay side). Try swapping relay NO/NC |
+| Solenoid doesn't click at all | Check SSSCat battery compartment (fresh AAA batteries?). Check diode orientation (stripe toward relay side). Try swapping relay NO/NC |
 | Too many false positives | Increase `MIN_CONFIDENCE`, `OVERLAP_THRESHOLD`, or `DEBOUNCE_FRAMES` in config.h |
 | Sprays when cat is on floor | Make sure counter is learned as ID 2. Reposition camera angle |
 | Sprays when I'm at counter | Learn "person" as ID 3 and ensure `PERSON_EXCLUSION_ENABLED` is `1` |
 | Counter not detected | Lower the Detection Threshold in HUSKYLENS 2 settings. Re-learn the surface |
 | LED blinking fast | HUSKYLENS 2 disconnected — check I2C wiring and USB-C power |
-| Relay clicks but solenoid doesn't fire | Check battery holder has fresh AAA batteries. Check if relay is active-low; set `DETERRENT_ACTIVE_LOW` to `1` |
+| Relay clicks but solenoid doesn't fire | Check SSSCat has fresh AAA batteries. Check if relay is active-low; set `DETERRENT_ACTIVE_LOW` to `1` |
 | SSSCat can runs out fast | Increase `SPRAY_COOLDOWN_MS` or lower `MAX_SPRAYS_PER_HOUR`. Each can has ~120 sprays |
 | "Rate limit reached" message | Too many sprays in one hour — check for false positives. Resets automatically after 1 hour |
 | "Can depleted" message | Replace the SSSCat refill can and reset the Arduino to zero the spray counter |
@@ -358,7 +369,7 @@ Upload `test_hardware/test_hardware.ino` to verify wiring without needing an act
 - **Never use keyboard duster cans** — they contain difluoroethane, which is toxic to cats
 - **Always mount the SSSCat can upright** — inverted cans can release liquid propellant (frostbite risk)
 - **The flyback diode is required** — without it, the relay contacts will arc and degrade when the solenoid turns off
-- **Keep battery circuit separate from Arduino** — only the SSSCat solenoid uses the 6V batteries; the Arduino runs on 5V via USB
+- **Keep battery circuit separate from Arduino** — the SSSCat's 6V batteries power only the solenoid through the relay; the Arduino runs on 5V via USB
 - **Supervise initial runs** — watch the first few activations to confirm the spray is gentle and aimed correctly
 - **Test after reassembly** — after modifying the SSSCat, snap the can back in and test with the hardware test sketch before deploying
 - **Cats with severe asthma** — SSSCat is safe for most cats, but if your cat has a respiratory condition, consult your vet before using any air-spray deterrent
